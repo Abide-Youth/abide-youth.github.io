@@ -200,6 +200,14 @@ select option{background:#15171f}
 .sharecard{display:flex;align-items:center;gap:16px}
 .sharecard .qr{width:112px;flex:none;border-radius:14px;overflow:hidden;background:#fff}
 .sharecard .qr svg{display:block;width:100%;height:auto}
+.rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rhythm a{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:18px;min-width:0}
+.rhythm .d{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--stage)}
+.rhythm b{font-family:var(--display);font-weight:900;font-size:34px;line-height:.95}
+.rhythm .n{font-weight:700;font-size:13px;line-height:1.2;margin-top:4px}
+.rhythm .w{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.ecard.solo{width:100%;max-width:none;aspect-ratio:auto;min-height:300px}
+.headsup{border-color:rgba(255,90,110,.35)}
 /* ---------- leaders ---------- */
 .leaders{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:14px;border-radius:22px;aspect-ratio:3/4;max-width:100%;overflow:hidden}
@@ -297,9 +305,14 @@ const DATA = {
   },
   // Weekly gatherings. day: 0=Sun … 6=Sat. The calendar fills in the next 6 weeks automatically.
   recurring: [
-    { title: "Abide Youth", day: 3, start: "19:00", place: "Gym", photo: 7, about: "Wednesday night youth for 6th–12th grade. Prayer at 5:00, study hall at 5:30, hangout at 6:00." },
-    { title: "Club58 & Abide HS", day: 0, start: "09:45", place: "The Rock", photo: 16, about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
-    { title: "HS Discipleship Groups", day: 1, start: "18:00", end: "20:00", place: "Guys: Room 6 · Girls: leader homes", photo: 5, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
+    { title: "Abide Youth", who: "6th–12th", day: 3, start: "19:00", place: "Gym", photo: 7, about: "Wednesday night youth for 6th–12th grade. Prayer at 5:00, study hall at 5:30, hangout at 6:00." },
+    { title: "Club58 & Abide HS", who: "5th–12th", day: 0, start: "09:45", place: "The Rock", photo: 16, about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
+    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "18:00", end: "20:00", place: "Guys: Room 6 · Girls: leader homes", photo: 5, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
+  ],
+  // Changes to the weekly rhythm (no youth, moved, different room). date = YYYY-MM-DD.
+  // Example: { date: "2026-11-25", title: "No Abide Youth", note: "Happy Thanksgiving! See you Dec 2.", noYouth: true }
+  // noYouth: true makes the countdown skip that Wednesday.
+  changes: [
   ],
   // One-time events (camps, lockout, trips). Dates are YYYY-MM-DD, times in 24h.
   events: [
@@ -406,6 +419,7 @@ const gcal = e => {
   const endT = e.end || (() => { let [h,m] = e.start.split(":").map(Number); m += 90; h += Math.floor(m/60); return `${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`; })();
   const en = (e.endDate || e.date).replace(/-/g,"") + "T" + endT.replace(":","") + "00";
   const p = new URLSearchParams({ action:"TEMPLATE", text:`${e.title} · Abide Youth`, dates:`${s}/${en}`, details:e.about || "", location:e.place || "", ctz:"America/Denver" });
+  if (e.weekly) p.set("recur", "RRULE:FREQ=WEEKLY");
   return "https://calendar.google.com/calendar/render?" + p.toString();
 };
 const sampleTag = on => on ? `<span class="chip sample">Sample</span>` : "";
@@ -448,6 +462,8 @@ function nextYouth(){
   at.setDate(at.getDate() + ((3 - now.getDay() + 7) % 7));
   if (now >= at && now < new Date(at.getTime() + 2*3600e3)) return { at, live: true };
   if (now >= at) at.setDate(at.getDate() + 7);
+  const key = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  for (let i = 0; i < 6 && (DATA.changes || []).some(c => c.noYouth && c.date === key(at)); i++) at.setDate(at.getDate() + 7);
   return { at, live: false };
 }
 function countHTML(){
@@ -467,10 +483,28 @@ const versionPicker = () => `<div class="ver"><label for="ver">Bible version</la
 const addCal = e => `<a class="pill ghost" href="${gcal(e)}" target="_blank" rel="noopener">${I.plus} Add to calendar</a>`;
 
 /* ---------- views ---------- */
+/* ---------- calendar helpers ---------- */
+const specials = () => DATA.events.filter(e => parseD(e.endDate || e.date) >= today()).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
+const changesSoon = (days = 21) => (DATA.changes || []).filter(c => { const d = (parseD(c.date) - today()) / 864e5; return d >= 0 && d <= days; }).sort((a,b) => a.date.localeCompare(b.date));
+const nextOf = r => { const d = today(); d.setDate(d.getDate() + ((r.day - d.getDay() + 7) % 7)); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const DAYFULL = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
+const daysAway = e => { const n = Math.round((parseD(e.date) - today()) / 864e5); return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n < 7 ? "This " + DAYS[parseD(e.date).getDay()] : `In ${n} days`; };
+const headsUp = list => list.length ? `<div class="glass pad stack headsup" style="gap:10px"><p class="tag" style="color:var(--live)">Heads up</p>${list.map(c => `<div><b>${esc(c.title)}</b> <span class="tag" style="display:inline">${esc(whenLabel({ date: c.date, start: c.start || "19:00" }).split(" · ")[0])}</span>${c.note ? `<p class="muted small" style="margin-top:2px">${esc(c.note)}</p>` : ""}</div>`).join("")}</div>` : "";
+function specialCard(e){
+  return `<div class="next" style="${bgi(evPhoto(e))}">
+    <span class="live"><i></i><span class="tag" style="color:var(--ink)">${esc(daysAway(e))}</span></span>
+    <div class="stack" style="gap:10px"><p class="big h2">${esc(e.title)}</p><p class="tag" style="color:var(--ink)">${esc(whenLabel(e))} · ${esc(e.place)}</p>
+    ${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}
+    <div class="pills">${e.link ? `<a class="pill white" href="${e.link}" target="_blank" rel="noopener">Sign up ${I.out}</a>` : ""}${addCal(e)}</div></div>
+  </div>`;
+}
+const rhythm = () => `<div class="rhythm">${DATA.recurring.map(r => `
+  <a class="glass" href="#calendar"><span class="d">${DAYS[r.day].toUpperCase()}</span><b>${fmtT(r.start).replace(":00","")}</b><span class="n">${esc(r.title)}</span><span class="w">${esc(r.who || "")}</span></a>`).join("")}</div>`;
+
+/* ---------- views ---------- */
 function vHome(){
   const n = nextYouth(); const st = DATA.studies[0]; const c = DATA.church;
-  const soon = upcoming().slice(0, 6);
-  const lock = DATA.events.find(e => e.link && parseD(e.date) >= today());
+  const sp = specials();
   const words = ["Know Him", "Known by Him", "Make Him Known"];
   const band = Array(4).fill(words.map(w => `<span>${w} ✦</span>`).join("")).join("");
   return `<section class="view">
@@ -483,16 +517,24 @@ function vHome(){
 
     <div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
 
-    ${lock ? `<a class="sticker" href="${lock.link}" target="_blank" rel="noopener">
-      <div><p class="tag">${esc(whenLabel(lock))} · ${esc(lock.place)}</p><p class="h3">${esc(lock.title)} — sign up</p></div>${I.out}</a>` : ""}
+    ${headsUp(changesSoon(14))}
 
-    <div class="stack">
-      <div class="rowhead"><p class="tag">This week</p><a href="#calendar">Full calendar</a></div>
-      <div class="rail">${soon.map(e => `
+    ${sp.length ? `<div class="stack">
+      <div class="rowhead"><p class="tag">Coming up</p><a href="#calendar">Calendar</a></div>
+      ${sp.length === 1 ? `<a class="ecard solo" href="#calendar" style="${bgi(evPhoto(sp[0]))}">
+          <span class="datechip"><small>${DAYS[parseD(sp[0].date).getDay()].toUpperCase()}</small><b>${parseD(sp[0].date).getDate()}</b></span>
+          <div><p class="tag" style="color:var(--ink);margin-bottom:6px">${esc(daysAway(sp[0]))}</p><p class="big h2">${esc(sp[0].title)}</p><p class="tag" style="margin-top:8px">${esc(MONTHS[parseD(sp[0].date).getMonth()])} ${parseD(sp[0].date).getDate()} · ${fmtT(sp[0].start)} · ${esc(sp[0].place)}</p>
+          ${sp[0].link ? `<span class="pill white" style="margin-top:12px">Sign up ${I.out}</span>` : ""}</div>
+        </a>` : `<div class="rail">${sp.map(e => `
         <a class="ecard" href="#calendar" style="${bgi(evPhoto(e))}">
           <span class="datechip"><small>${DAYS[parseD(e.date).getDay()].toUpperCase()}</small><b>${parseD(e.date).getDate()}</b></span>
-          <div><p class="h3">${esc(e.title)}</p><p class="tag" style="margin-top:6px">${fmtT(e.start)} · ${esc(e.place)}</p></div>
-        </a>`).join("")}</div>
+          <div><p class="h3">${esc(e.title)}</p><p class="tag" style="margin-top:6px">${esc(MONTHS[parseD(e.date).getMonth()])} ${parseD(e.date).getDate()} · ${fmtT(e.start)}</p></div>
+        </a>`).join("")}</div>`}
+    </div>` : ""}
+
+    <div class="stack">
+      <p class="tag">Every week</p>
+      ${rhythm()}
     </div>
 
     <a class="feature" href="#study-${st.id}" style="${bgi(st.photo)}">
@@ -515,33 +557,21 @@ function vHome(){
   </section>`;
 }
 
-function evDetail(e, open){
-  const d = parseD(e.date);
-  return `<details class="ev glass" ${open ? "open" : ""}>
-    <summary><span class="thumb" style="${bgi(evPhoto(e))}"><span>${DAYS[d.getDay()].toUpperCase()} ${d.getDate()}</span></span>
-      <div style="min-width:0"><p class="t">${esc(e.title)}</p><p class="m">${fmtT(e.start)}${e.end ? "–" + fmtT(e.end) : ""} · ${esc(e.place)}</p></div>${I.chev}</summary>
-    <div class="body">${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}
-      <div class="pills">${e.link ? `<a class="pill white" href="${e.link}" target="_blank" rel="noopener">Sign up ${I.out}</a>` : ""}${addCal(e)}</div></div>
-  </details>`;
-}
 function vCalendar(){
-  const up = upcoming(); const first = up[0];
-  let out = "", lastWk = "";
-  up.slice(1).forEach(e => {
-    const d = parseD(e.date); const diff = Math.floor((d - today()) / 864e5);
-    const wk = diff < 7 ? "This week" : diff < 14 ? "Next week" : MONTHS_L[d.getMonth()];
-    if (wk !== lastWk){ out += `<p class="wk">${wk}</p>`; lastWk = wk; }
-    out += evDetail(e);
-  });
+  const sp = specials();
   return `<section class="view">
     <div class="pagehead"><p class="tag">What's coming up</p><h1 class="big h1">Don't<br><span class="outline">miss it</span></h1></div>
-    ${first ? `<div class="next" style="${bgi(evPhoto(first))}">
-      <span class="live"><i></i><span class="tag" style="color:var(--ink)">Up next</span></span>
-      <div class="stack" style="gap:10px"><p class="big h2">${esc(first.title)}</p><p class="tag" style="color:var(--ink)">${esc(whenLabel(first))} · ${esc(first.place)}</p>
-      ${first.about ? `<p class="muted small">${esc(first.about)}</p>` : ""}
-      <div class="pills">${first.link ? `<a class="pill white" href="${first.link}" target="_blank" rel="noopener">Sign up ${I.out}</a>` : ""}${addCal(first)}</div></div>
-    </div>` : ""}
-    <div class="stack" style="gap:10px">${out || `<p class="muted">Nothing on the calendar yet.</p>`}</div>
+    ${headsUp(changesSoon(60))}
+    ${sp.length ? sp.map(specialCard).join("") : `<div class="glass pad"><p class="h3">Nothing special on the books yet</p><p class="muted small" style="margin-top:6px">Big nights, trips and camps show up here. See you Wednesday.</p></div>`}
+    <div class="stack" style="gap:10px">
+      <p class="wk">Every week</p>
+      ${DATA.recurring.map(r => { const e = { ...r, date: nextOf(r), weekly: true }; return `<details class="ev glass">
+        <summary><span class="thumb" style="${bgi(evPhoto(r))}"><span>${DAYS[r.day].toUpperCase()}</span></span>
+          <div style="min-width:0"><p class="t">${esc(r.title)}</p><p class="m">${DAYFULL[r.day]} · ${fmtT(r.start)}${r.end ? "–" + fmtT(r.end) : ""}${r.who ? " · " + esc(r.who) : ""}</p></div>${I.chev}</summary>
+        <div class="body"><p class="muted small">${esc(r.place)}${r.about ? " — " + esc(r.about) : ""}</p>
+          <div class="pills"><a class="pill ghost" href="${gcal(e)}" target="_blank" rel="noopener">${I.plus} Add weekly to calendar</a></div></div>
+      </details>`; }).join("")}
+    </div>
   </section>`;
 }
 
