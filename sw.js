@@ -1,5 +1,5 @@
 /* Abide Youth offline cache. Bump VERSION whenever you publish changes. */
-const VERSION = "abide-v5";
+const VERSION = "abide-v6";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
   "photos/01-senior.jpg",
   "photos/02-summer.jpg",
