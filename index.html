@@ -208,6 +208,10 @@ select option{background:#15171f}
 .rhythm .w{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
 .ecard.solo{width:100%;max-width:none;aspect-ratio:auto;min-height:300px}
 .headsup{border-color:rgba(255,90,110,.35)}
+.studyhero{min-height:380px;box-shadow:0 0 0 1px var(--edge),0 18px 60px rgba(111,125,255,.25)}
+.studyhero .h2{font-size:clamp(46px,14vw,70px)}
+.studychip{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--stage);color:var(--stage-ink);font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 6px 24px var(--stage-glow)}
+.studychip svg{width:16px;height:16px}
 /* ---------- leaders ---------- */
 .leaders{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:14px;border-radius:22px;aspect-ratio:3/4;max-width:100%;overflow:hidden}
@@ -450,7 +454,7 @@ const TABS = [
 /* Which photo sits behind each page (index into PHOTOS). */
 const BG = { home:0, calendar:10, studies:11, visit:9, leaders:5 };
 /* Photos that get tossed around in the home polaroid stack. */
-const POLA = [4, 13, 14, 2, 15, 8, 6, 3, 12];
+const POLA = [13, 14, 2, 15, 8, 4, 6, 3, 12];
 const img = i => PHOTOS[i] ? PHOTOS[i].src : "";
 const bgi = i => `background-image:url('${img(i)}')`;
 
@@ -499,7 +503,7 @@ function specialCard(e){
   </div>`;
 }
 const rhythm = () => `<div class="rhythm">${DATA.recurring.map(r => `
-  <a class="glass" href="#calendar"><span class="d">${DAYS[r.day].toUpperCase()}</span><b>${fmtT(r.start).replace(":00","")}</b><span class="n">${esc(r.title)}</span><span class="w">${esc(r.who || "")}</span></a>`).join("")}</div>`;
+  <a class="glass" href="#calendar"><span class="d">${DAYS[r.day].toUpperCase()} · ${fmtT(r.start).slice(-2)}</span><b>${fmtT(r.start).slice(0,-3).replace(":00","")}</b><span class="n">${esc(r.title)}</span><span class="w">${esc(r.who || "")}</span></a>`).join("")}</div>`;
 
 /* ---------- views ---------- */
 function vHome(){
@@ -516,6 +520,14 @@ function vHome(){
     </div>
 
     <div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
+
+    <a class="feature studyhero" href="#study-${st.id}" style="${bgi(st.photo)}">
+      <span class="studychip">${I.book} This week's study</span>
+      <p class="tag" style="color:var(--ink)">${esc(st.series)} · ${esc(st.passage.label)}</p>
+      <p class="big h2">${esc(st.title)}</p>
+      <p class="muted small" style="max-width:34ch">“${esc(st.keyVerse.text.split(/[.;]/)[0])}.”</p>
+      <span class="pill white" style="margin-top:6px">Open the study ${I.out.replace('M7 17 17 7','M5 12h14').replace('M8 7h9v9','m13 6 6 6-6 6')}</span>
+    </a>
 
     ${headsUp(changesSoon(14))}
 
@@ -537,11 +549,6 @@ function vHome(){
       ${rhythm()}
     </div>
 
-    <a class="feature" href="#study-${st.id}" style="${bgi(st.photo)}">
-      <p class="tag" style="color:var(--stage)">This week's study · ${esc(st.series)}</p>
-      <p class="big h2">${esc(st.title)}</p>
-      <p class="muted">${esc(st.passage.label)} — tap to dig in</p>
-    </a>
 
     <div class="stack">
       <p class="tag">Recent memories</p>
