@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>window.BUILD="4";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -507,6 +508,7 @@ function vHome(){
       <a class="glass" href="${c.contact[3].href}" target="_blank" rel="noopener">${I.ig}<b>@abide.yth</b></a>
       <a class="glass" href="${c.contact[1].href}">${I.msg}<b>Text “abide” to 877-804-2898 to receive text updates</b></a>
     </div>
+    ${window.BUILD ? `<p class="hint">App version ${window.BUILD}</p>` : ""}
   </section>`;
 }
 
@@ -669,6 +671,26 @@ route();
 </script>
 
 <script>
+/* Auto-update: when the app opens or comes back to the foreground, check for a newer version and reload. */
+(function(){
+  let busy = false;
+  async function check(){
+    if (busy || !navigator.onLine) return; busy = true;
+    try {
+      const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+      const v = (await r.json()).build;
+      let tried = null; try { tried = sessionStorage.getItem("abide-reload"); } catch(e) {}
+      if (String(v) !== String(window.BUILD) && tried !== String(v)) {
+        try { sessionStorage.setItem("abide-reload", String(v)); } catch(e) {}
+        if ("serviceWorker" in navigator) { const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); }
+        if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+        location.reload();
+      }
+    } catch(e) {} finally { busy = false; }
+  }
+  addEventListener("load", check);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
+})();
 /* Offline support + native install prompt where the browser offers one */
 if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 let installEvt = null;
