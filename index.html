@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="7";</script>
+<script>window.BUILD="8";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -212,6 +212,35 @@ select option{background:#15171f}
 .studyhero .h2{font-size:clamp(46px,14vw,70px)}
 .studychip{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--stage);color:var(--stage-ink);font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 6px 24px var(--stage-glow)}
 .studychip svg{width:16px;height:16px}
+
+/* ---------- special events: winter retreat + custom event art ---------- */
+.retreat{position:relative;border-radius:28px;overflow:hidden;min-height:520px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;background:#0a1020 center/cover;box-shadow:0 0 0 1px rgba(180,215,255,.28),0 24px 70px rgba(90,150,255,.35);isolation:isolate}
+.retreat::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(40,90,180,.55) 0%,rgba(10,18,40,.35) 35%,rgba(7,10,22,.94) 78%),linear-gradient(0deg,rgba(150,200,255,.18),rgba(150,200,255,.18));mix-blend-mode:normal}
+.retreat .snow{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2.5px 2.5px at 80px 120px,rgba(255,255,255,.9),transparent),radial-gradient(1.5px 1.5px at 150px 60px,#fff,transparent),radial-gradient(2px 2px at 210px 160px,rgba(255,255,255,.8),transparent),radial-gradient(1.5px 1.5px at 260px 20px,#fff,transparent),radial-gradient(3px 3px at 120px 190px,rgba(255,255,255,.7),transparent);background-size:280px 210px;animation:snow 14s linear infinite;opacity:.85}
+.retreat .snow.b{background-size:190px 170px;animation-duration:9s;opacity:.55;filter:blur(.6px)}
+@keyframes snow{from{background-position:0 0}to{background-position:40px 420px}}
+.retreat .top{position:static;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:0;margin:0}
+.retreat .ice{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(200,225,255,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.retreat .dates{text-align:right;font-family:var(--display);font-weight:900;line-height:.85;text-transform:uppercase}
+.retreat .dates b{display:block;font-size:44px}
+.retreat .dates small{font-family:var(--mono);font-size:10px;letter-spacing:.14em;font-weight:500;color:#bcd8ff}
+.retreat .title{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.8;margin:0;font-size:clamp(74px,25vw,132px);letter-spacing:-.005em}
+.retreat .title span{display:block;color:transparent;-webkit-text-stroke:2px #cfe4ff}
+.retreat .urgent{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--live);color:#fff;box-shadow:0 10px 34px rgba(255,90,110,.45)}
+.retreat .urgent .p{font-family:var(--display);font-weight:900;font-size:46px;line-height:.85}
+.retreat .urgent .p s{display:block;font-size:16px;opacity:.75;text-decoration-thickness:2px}
+.retreat .urgent .msg{font-weight:700;font-size:14px;line-height:1.25}
+.retreat .urgent .msg small{display:block;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.9;margin-top:3px}
+.retreat .calm{display:flex;align-items:baseline;gap:10px}
+.retreat .calm b{font-family:var(--display);font-weight:900;font-size:46px;line-height:.85}
+.retreat .go{justify-content:center;font-size:17px;min-height:54px;width:100%;background:#fff;color:var(--night);box-shadow:0 10px 40px rgba(180,215,255,.45)}
+.retreat .go svg{width:18px;height:18px}
+.art{position:absolute;inset:0;z-index:0}
+.art svg{display:block;width:100%;height:100%}
+.ecard.artcard::before{display:none}
+.ecard.artcard{background:#07080d;padding:0;aspect-ratio:4/5}
+.ecard.artcard.solo{min-height:0;aspect-ratio:4/5}
+.artbox{position:relative;aspect-ratio:4/5;border-radius:26px;overflow:hidden;box-shadow:0 0 0 1px var(--edge)}
 /* ---------- leaders ---------- */
 .leaders{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:14px;border-radius:22px;aspect-ratio:3/4;max-width:100%;overflow:hidden}
@@ -319,6 +348,13 @@ const DATA = {
   ],
   // One-time events (camps, retreats, trips). Dates are YYYY-MM-DD, times in 24h.
   events: [
+    { id: "fallbash", title: "Fall Bash", date: "2026-10-28", start: "18:30", end: "21:00", place: "The Rock", art: "tailgate", replaces: true,
+      about: "Tailgate theme! Come dressed in your favorite sports attire: jersey, mascot, cheerleader, or full tailgate gear. Bring a friend." },
+    { id: "retreat", title: "Winter Retreat", date: "2027-01-01", endDate: "2027-01-04", allDay: true, place: "", photo: 5, featured: true,
+      link: "https://therock.ccbchurch.com/goto/forms/2223/responses/new",
+      // Price tiers: each price holds through its "until" date (last day at that price).
+      prices: [ { amount: 260, until: "2026-10-16" }, { amount: 275 } ],
+      about: "Kick off the new year with four days away together. Grab your spot now." }
   ],
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
@@ -418,6 +454,7 @@ const today = () => { const n = new Date(); return new Date(n.getFullYear(), n.g
 const expand = () => { const out = []; const t0 = today(); for (let i = 0; i < 28; i++) { const d = new Date(t0); d.setDate(t0.getDate() + i); DATA.recurring.forEach(r => { if (r.day === d.getDay()) out.push({ ...r, date: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}` }); }); } return out; };
 const upcoming = () => [...DATA.events, ...expand().filter(r => !DATA.events.some(e => e.replaces && e.date === r.date))].filter(e => parseD(e.endDate || e.date) >= today()).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
 const gcal = e => {
+  if (e.allDay) { const nx = parseD(e.endDate || e.date); nx.setDate(nx.getDate() + 1); const p = new URLSearchParams({ action:"TEMPLATE", text:`${e.title} · Abide Youth`, dates:`${e.date.replace(/-/g,"")}/${nx.getFullYear()}${String(nx.getMonth()+1).padStart(2,"0")}${String(nx.getDate()).padStart(2,"0")}`, details:(e.about || "") + (e.link ? "\nSign up: " + e.link : ""), location:e.place || "", ctz:"America/Denver" }); return "https://calendar.google.com/calendar/render?" + p.toString(); }
   const s = e.date.replace(/-/g,"") + "T" + e.start.replace(":","") + "00";
   const endT = e.end || (() => { let [h,m] = e.start.split(":").map(Number); m += 90; h += Math.floor(m/60); return `${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`; })();
   const en = (e.endDate || e.date).replace(/-/g,"") + "T" + endT.replace(":","") + "00";
@@ -485,6 +522,80 @@ const refPill = r => `<a class="pill ghost" href="${bibleUrl(r.ref)}" target="_b
 const versionPicker = () => `<div class="ver"><label for="ver">Bible version</label><select id="ver">${VERSIONS.map(v => `<option value="${v.id}" ${v.id == version ? "selected" : ""}>${v.abbr}</option>`).join("")}</select></div>`;
 const addCal = e => `<a class="pill ghost" href="${gcal(e)}" target="_blank" rel="noopener">${I.plus} Add to calendar</a>`;
 
+
+
+/* ---------- custom event graphics (SVG, drawn in the app's style) ---------- */
+const ART = {
+  tailgate: () => {
+    const D = "'Big Shoulders Display', Impact, 'Arial Narrow', sans-serif", M = "'JetBrains Mono', ui-monospace, monospace";
+    const bulbs = (x, y) => { let o = ""; for (let r = 0; r < 3; r++) for (let c = 0; c < 5; c++) o += `<circle cx="${x + 7 + c * 11}" cy="${y + 7 + r * 10}" r="3.6" fill="#fff8dc"/>`; return o; };
+    const flags = ["#6f7dff","#ff5a6e","#f5f6fb","#ffb23f"]; let pen = "";
+    for (let k = 0; k < 13; k++) { const x = 8 + k * 30.5, y = 92 + Math.sin(k / 12 * Math.PI) * 18; pen += `<path d="M${x} ${y} l26 0 l-13 26 z" fill="${flags[k % 4]}" opacity=".95"/>`; }
+    let lines = ""; [0, 14, 32, 54, 80, 110].forEach((d, k) => { const y = 402 + d; const w = 150 + d * 1.9; lines += `<line x1="${200 - w}" y1="${y}" x2="${200 + w}" y2="${y}" stroke="#fff" stroke-opacity="${.35 + k * .06}" stroke-width="${1.5 + k * .5}"/>`; });
+    return `<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fall Bash, tailgate theme. Wednesday October 28 at 6:30 PM. Come dressed in your favorite sports attire.">
+  <defs>
+    <linearGradient id="tg-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2050"/><stop offset=".55" stop-color="#0b0e22"/><stop offset="1" stop-color="#07080d"/></linearGradient>
+    <radialGradient id="tg-glow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".95"/><stop offset=".35" stop-color="#ffd98a" stop-opacity=".35"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="tg-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3c4" stop-opacity=".32"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/></linearGradient>
+    <linearGradient id="tg-turf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d6a3c"/><stop offset="1" stop-color="#0a2716"/></linearGradient>
+    <linearGradient id="tg-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07080d" stop-opacity="0"/><stop offset="1" stop-color="#07080d" stop-opacity=".75"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#tg-sky)"/>
+  <path d="M30 40 L-60 420 L170 420 Z" fill="url(#tg-beam)"/><path d="M370 40 L230 420 L460 420 Z" fill="url(#tg-beam)"/>
+  <circle cx="34" cy="34" r="80" fill="url(#tg-glow)"/><circle cx="366" cy="34" r="80" fill="url(#tg-glow)"/>
+  <rect x="2" y="16" width="64" height="36" rx="4" fill="#20253a"/>${bulbs(4, 18)}<rect x="31" y="52" width="5" height="40" fill="#20253a"/>
+  <rect x="334" y="16" width="64" height="36" rx="4" fill="#20253a"/>${bulbs(336, 18)}<rect x="364" y="52" width="5" height="40" fill="#20253a"/>
+  <path d="M0 92 Q200 128 400 92" fill="none" stroke="#f5f6fb" stroke-opacity=".6" stroke-width="1.5"/>${pen}
+  <text x="200" y="150" text-anchor="middle" font-family="${M}" font-weight="700" font-size="12" letter-spacing="3.5" fill="#f5f6fb" fill-opacity=".8">ABIDE YOUTH PRESENTS</text>
+  <text x="200" y="262" text-anchor="middle" font-family="${D}" font-weight="900" font-size="132" textLength="300" lengthAdjust="spacingAndGlyphs" fill="#f5f6fb">FALL</text>
+  <text x="200" y="392" text-anchor="middle" font-family="${D}" font-weight="900" font-size="132" textLength="300" lengthAdjust="spacingAndGlyphs" fill="none" stroke="#f5f6fb" stroke-width="2.5">BASH</text>
+  <g transform="rotate(-5 200 290)">
+    <rect x="-20" y="262" width="440" height="42" fill="#ffb23f"/>
+    <text x="200" y="293" text-anchor="middle" font-family="${D}" font-weight="900" font-size="30" letter-spacing="1.5" fill="#07080d">✦ TAILGATE EDITION ✦ GAME DAY ✦</text>
+  </g>
+  <g transform="translate(318 196) rotate(-28)">
+    <ellipse cx="0" cy="0" rx="34" ry="20" fill="#8a4a24" stroke="#3b1d0c" stroke-width="2"/>
+    <path d="M-25 -8 Q-28 0 -25 8 M25 -8 Q28 0 25 8" stroke="#f5f6fb" stroke-width="3" fill="none"/>
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#f5f6fb" stroke-width="2.5"/>
+    <path d="M-8 -4 v8 M-3 -4 v8 M2 -4 v8 M7 -4 v8" stroke="#f5f6fb" stroke-width="2"/>
+  </g>
+  <path d="M60 402 L340 402 L460 500 L-60 500 Z" fill="url(#tg-turf)"/>${lines}
+  <rect x="0" y="402" width="400" height="98" fill="url(#tg-fade)"/>
+  <rect x="34" y="418" width="332" height="48" rx="24" fill="#f5f6fb"/>
+  <text x="200" y="452" text-anchor="middle" font-family="${D}" font-weight="900" font-size="30" letter-spacing=".5" fill="#07080d">WED · OCT 28 · 6:30 PM</text>
+  <text x="200" y="486" text-anchor="middle" font-family="${M}" font-weight="700" font-size="10.5" letter-spacing="1.2" fill="#f5f6fb">WEAR YOUR JERSEY · MASCOT · CHEER · TAILGATE GEAR</text>
+</svg>`;
+  }
+};
+/* ---------- special event extras ---------- */
+const rangeLabel = e => { const a = parseD(e.date), b = parseD(e.endDate || e.date); return a.getMonth() === b.getMonth() ? `${MONTHS[a.getMonth()]} ${a.getDate()}–${b.getDate()}` : `${MONTHS[a.getMonth()]} ${a.getDate()} – ${MONTHS[b.getMonth()]} ${b.getDate()}`; };
+const evWhen = e => e.allDay ? `${DAYS[parseD(e.date).getDay()]}–${DAYS[parseD(e.endDate || e.date).getDay()]} · ${rangeLabel(e)}` : whenLabel(e);
+/* Current price, plus the next jump if one is coming. */
+function priceInfo(e){
+  if (!e.prices) return null;
+  const t = today(); const i = e.prices.findIndex(p => !p.until || parseD(p.until) >= t);
+  const cur = e.prices[i], nxt = e.prices[i + 1];
+  if (!nxt) return { now: cur.amount };
+  const u = parseD(cur.until), end = new Date(u); end.setDate(end.getDate() + 1);   // price changes at midnight after "until"
+  const days = Math.round((u - t) / 864e5), h = Math.max(0, Math.floor((end - new Date()) / 36e5));
+  const ends = days === 0 ? "today" : days === 1 ? "tomorrow" : days < 7 ? DAYFULL[u.getDay()].slice(0, -1) : `${MONTHS[u.getMonth()]} ${u.getDate()}`;
+  return { now: cur.amount, next: nxt.amount, ends, left: h < 48 ? `${h} hrs left` : `${Math.floor(h / 24)} days ${h % 24} hrs left` };
+}
+function retreatCard(e){
+  const pr = priceInfo(e);
+  const deal = pr && pr.next ? `<div class="urgent"><span class="p">$${pr.now}</span><span class="msg">$${pr.now} price ends ${pr.ends}. Then it's $${pr.next}.<small>${pr.left} · sign up this week</small></span></div>`
+    : pr ? `<div class="calm"><b>$${pr.now}</b><span class="tag" style="color:#cfe4ff">per student</span></div>` : "";
+  return `<div class="retreat" style="${bgi(evPhoto(e))}"><span class="snow"></span><span class="snow b"></span>
+    <div class="top"><span class="ice">❄ Special event</span><span class="dates"><b>${esc(rangeLabel(e))}</b><small>${parseD(e.date).getFullYear()} · ${esc(daysAway(e))}</small></span></div>
+    <div class="stack" style="gap:14px">
+      <h2 class="title">Winter<span>Retreat</span></h2>
+      ${e.about ? `<p class="muted" style="max-width:34ch;color:#e3eeff">${esc(e.about)}</p>` : ""}
+      ${deal}
+      <a class="pill go" href="${e.link}" target="_blank" rel="noopener">Sign up now ${I.out}</a>
+      <div class="pills" style="justify-content:center">${addCal(e)}</div>
+    </div>
+  </div>`;
+}
 /* ---------- views ---------- */
 /* ---------- calendar helpers ---------- */
 const specials = () => DATA.events.filter(e => parseD(e.endDate || e.date) >= today()).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
@@ -494,9 +605,12 @@ const DAYFULL = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Friday
 const daysAway = e => { const n = Math.round((parseD(e.date) - today()) / 864e5); return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n < 7 ? "This " + DAYS[parseD(e.date).getDay()] : `In ${n} days`; };
 const headsUp = list => list.length ? `<div class="glass pad stack headsup" style="gap:10px"><p class="tag" style="color:var(--live)">Heads up</p>${list.map(c => `<div><b>${esc(c.title)}</b> <span class="tag" style="display:inline">${esc(whenLabel({ date: c.date, start: c.start || "18:30" }).split(" · ")[0])}</span>${c.note ? `<p class="muted small" style="margin-top:2px">${esc(c.note)}</p>` : ""}</div>`).join("")}</div>` : "";
 function specialCard(e){
+  if (e.featured) return retreatCard(e);
+  if (e.art) return `<div class="stack" style="gap:10px"><div class="artbox"><div class="art">${ART[e.art]()}</div></div>
+    <div class="glass pad stack" style="gap:10px"><span class="tag" style="color:var(--stage)">${esc(daysAway(e))} · ${esc(whenLabel(e))}${e.place ? " · " + esc(e.place) : ""}</span>${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}<div class="pills">${addCal(e)}</div></div></div>`;
   return `<div class="next" style="${bgi(evPhoto(e))}">
     <span class="live"><i></i><span class="tag" style="color:var(--ink)">${esc(daysAway(e))}</span></span>
-    <div class="stack" style="gap:10px"><p class="big h2">${esc(e.title)}</p><p class="tag" style="color:var(--ink)">${esc(whenLabel(e))} · ${esc(e.place)}</p>
+    <div class="stack" style="gap:10px"><p class="big h2">${esc(e.title)}</p><p class="tag" style="color:var(--ink)">${esc(evWhen(e))}${e.place ? " · " + esc(e.place) : ""}</p>
     ${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}
     <div class="pills">${e.link ? `<a class="pill white" href="${e.link}" target="_blank" rel="noopener">Sign up ${I.out}</a>` : ""}${addCal(e)}</div></div>
   </div>`;
@@ -507,7 +621,8 @@ const rhythm = () => `<div class="rhythm">${DATA.recurring.map(r => `
 /* ---------- views ---------- */
 function vHome(){
   const n = nextYouth(); const st = DATA.studies[0]; const c = DATA.church;
-  const sp = specials();
+  const feat = specials().filter(e => e.featured);
+  const sp = specials().filter(e => !e.featured);
   const words = ["Know Him", "Known by Him", "Make Him Known"];
   const band = Array(4).fill(words.map(w => `<span>${w} ✦</span>`).join("")).join("");
   return `<section class="view">
@@ -515,10 +630,12 @@ function vHome(){
       <span class="live ${n.live ? "now" : ""}"><i></i><span class="tag" style="color:var(--ink)">${n.live ? "Live now" : "Wed " + MONTHS[n.at.getMonth()] + " " + n.at.getDate() + " · 6:30 PM · The Gym"}</span></span>
       <h1 class="big h1">Abide<br><span class="outline">Youth</span></h1>
       <div id="count">${countHTML()}</div>
-      <p class="muted" style="max-width:32ch">Wednesdays at 7 in the Gym. 6th–12th grade. Bring a friend.</p>
+      <p class="muted" style="max-width:32ch">Wednesdays at 6:30 in the Gym. 6th–12th grade. Bring a friend.</p>
     </div>
 
     <div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
+
+    ${feat.map(retreatCard).join("")}
 
     <a class="feature studyhero" href="#study-${st.id}" style="${bgi(st.photo)}">
       <span class="studychip">${I.book} This week's study</span>
@@ -532,11 +649,11 @@ function vHome(){
 
     ${sp.length ? `<div class="stack">
       <div class="rowhead"><p class="tag">Coming up</p><a href="#calendar">Calendar</a></div>
-      ${sp.length === 1 ? `<a class="ecard solo" href="#calendar" style="${bgi(evPhoto(sp[0]))}">
+      ${sp.length === 1 && sp[0].art ? `<a class="ecard solo artcard" href="#calendar" aria-label="${esc(sp[0].title)}, ${esc(whenLabel(sp[0]))}"><div class="art">${ART[sp[0].art]()}</div></a>` : sp.length === 1 ? `<a class="ecard solo" href="#calendar" style="${bgi(evPhoto(sp[0]))}">
           <span class="datechip"><small>${DAYS[parseD(sp[0].date).getDay()].toUpperCase()}</small><b>${parseD(sp[0].date).getDate()}</b></span>
           <div><p class="tag" style="color:var(--ink);margin-bottom:6px">${esc(daysAway(sp[0]))}</p><p class="big h2">${esc(sp[0].title)}</p><p class="tag" style="margin-top:8px">${esc(MONTHS[parseD(sp[0].date).getMonth()])} ${parseD(sp[0].date).getDate()} · ${fmtT(sp[0].start)} · ${esc(sp[0].place)}</p>
           ${sp[0].link ? `<span class="pill white" style="margin-top:12px">Sign up ${I.out}</span>` : ""}</div>
-        </a>` : `<div class="rail">${sp.map(e => `
+        </a>` : `<div class="rail">${sp.map(e => e.art ? `<a class="ecard artcard" href="#calendar" aria-label="${esc(e.title)}"><div class="art">${ART[e.art]()}</div></a>` : `
         <a class="ecard" href="#calendar" style="${bgi(evPhoto(e))}">
           <span class="datechip"><small>${DAYS[parseD(e.date).getDay()].toUpperCase()}</small><b>${parseD(e.date).getDate()}</b></span>
           <div><p class="h3">${esc(e.title)}</p><p class="tag" style="margin-top:6px">${esc(MONTHS[parseD(e.date).getMonth()])} ${parseD(e.date).getDate()} · ${fmtT(e.start)}</p></div>
@@ -564,7 +681,7 @@ function vHome(){
 }
 
 function vCalendar(){
-  const sp = specials();
+  const sp = specials().sort((a,b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   return `<section class="view">
     <div class="pagehead"><p class="tag">What's coming up</p><h1 class="big h1">Don't<br><span class="outline">miss it</span></h1></div>
     ${headsUp(changesSoon(60))}
