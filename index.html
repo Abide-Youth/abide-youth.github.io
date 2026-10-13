@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="6";</script>
+<script>window.BUILD="7";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -289,11 +289,11 @@ const DATA = {
     address: ["The Rock", "4881 Cherokee Dr.", "Castle Rock, CO 80109"],
     mapsQuery: "The Rock, 4881 Cherokee Dr, Castle Rock, CO 80109",
     times: [
-      { label: "Abide Youth", day: "Wednesdays", time: "7:00 PM", sub: "6th–12th grade · Gym" },
-      { label: "Before Youth", day: "Wednesdays", time: "5–6 PM", sub: "Prayer 5:00 · Study hall 5:30 · Hangout 6:00" },
+      { label: "Worship Discipleship", day: "Wednesdays", time: "3:30–5 PM", sub: "Led by Colten May" },
+      { label: "Prayer", day: "Wednesdays", time: "5–5:30 PM", sub: "Before youth" },
+      { label: "Abide Youth", day: "Wednesdays", time: "6:30 PM", sub: "6th–12th grade · Gym" },
       { label: "Club58 & Abide HS", day: "Sundays", time: "9:45 AM", sub: "5th–8th and 9th–12th · Worship, then break out" },
-      { label: "Discipleship Groups", day: "Mondays", time: "6–8 PM", sub: "High school guys in Room 6 · girls at leader homes" },
-      { label: "Worship Discipleship", day: "Wednesdays", time: "3:30–5 PM", sub: "Led by Colten May" }
+      { label: "Discipleship Groups", day: "Mondays", time: "5:30–7 PM", sub: "High school guys in Room 6 · girls at leader homes" }
     ],
     contact: [
       { label: "Youth pastor", value: "jaden@therock.org", href: "mailto:jaden@therock.org" },
@@ -302,25 +302,23 @@ const DATA = {
       { label: "Instagram", value: "@abide.yth", href: "https://www.instagram.com/abide.yth/" }
     ],
     links: [
-      { label: "Register for Lockout", href: "https://therock.ccbchurch.com/goto/forms/2224/responses/new" },
       { label: "Give", href: "https://www.therock.org/give/" },
       { label: "therock.org/youth", href: "https://www.therock.org/youth/" }
     ]
   },
   // Weekly gatherings. day: 0=Sun … 6=Sat. The calendar fills in the next 6 weeks automatically.
   recurring: [
-    { title: "Abide Youth", who: "6th–12th", day: 3, start: "19:00", place: "Gym", photo: 7, about: "Wednesday night youth for 6th–12th grade. Prayer at 5:00, study hall at 5:30, hangout at 6:00." },
+    { title: "Abide Youth", who: "6th–12th", day: 3, start: "18:30", place: "Gym", photo: 7, about: "Wednesday night youth for 6th–12th grade. Prayer 5:00–5:30, service starts at 6:30." },
     { title: "Club58 & Abide HS", who: "5th–12th", day: 0, start: "09:45", place: "The Rock", photo: 16, about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
-    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "18:00", end: "20:00", place: "Guys: Room 6 · Girls: leader homes", photo: 5, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
+    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "17:30", end: "19:00", place: "Guys: Room 6 · Girls: leader homes", photo: 5, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
   ],
   // Changes to the weekly rhythm (no youth, moved, different room). date = YYYY-MM-DD.
   // Example: { date: "2026-11-25", title: "No Abide Youth", note: "Happy Thanksgiving! See you Dec 2.", noYouth: true }
   // noYouth: true makes the countdown skip that Wednesday.
   changes: [
   ],
-  // One-time events (camps, lockout, trips). Dates are YYYY-MM-DD, times in 24h.
+  // One-time events (camps, retreats, trips). Dates are YYYY-MM-DD, times in 24h.
   events: [
-    { title: "Lockout", date: "2026-10-09", start: "19:00", place: "The Rock", about: "Lockout night for Abide Youth. Register ahead of time so we know you're coming.", link: "https://therock.ccbchurch.com/goto/forms/2224/responses/new", photo: 4 }
   ],
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
@@ -460,12 +458,12 @@ const img = i => PHOTOS[i] ? PHOTOS[i].src : "";
 const bgi = i => `background-image:url('${img(i)}')`;
 
 /* ---------- next-gathering countdown ---------- */
-/* Always counts down to the next Wednesday at 7 PM. Shows "live" from 7 to 9 PM on Wednesdays. */
+/* Always counts down to the next Wednesday at 6:30 PM. Shows "live" from 6:30 to 9 PM on Wednesdays. */
 function nextYouth(){
   const now = new Date();
-  const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 0);
+  const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 30);
   at.setDate(at.getDate() + ((3 - now.getDay() + 7) % 7));
-  if (now >= at && now < new Date(at.getTime() + 2*3600e3)) return { at, live: true };
+  if (now >= at && now < new Date(at.getTime() + 2.5*3600e3)) return { at, live: true };
   if (now >= at) at.setDate(at.getDate() + 7);
   const key = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   for (let i = 0; i < 6 && (DATA.changes || []).some(c => c.noYouth && c.date === key(at)); i++) at.setDate(at.getDate() + 7);
@@ -494,7 +492,7 @@ const changesSoon = (days = 21) => (DATA.changes || []).filter(c => { const d = 
 const nextOf = r => { const d = today(); d.setDate(d.getDate() + ((r.day - d.getDay() + 7) % 7)); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 const DAYFULL = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
 const daysAway = e => { const n = Math.round((parseD(e.date) - today()) / 864e5); return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n < 7 ? "This " + DAYS[parseD(e.date).getDay()] : `In ${n} days`; };
-const headsUp = list => list.length ? `<div class="glass pad stack headsup" style="gap:10px"><p class="tag" style="color:var(--live)">Heads up</p>${list.map(c => `<div><b>${esc(c.title)}</b> <span class="tag" style="display:inline">${esc(whenLabel({ date: c.date, start: c.start || "19:00" }).split(" · ")[0])}</span>${c.note ? `<p class="muted small" style="margin-top:2px">${esc(c.note)}</p>` : ""}</div>`).join("")}</div>` : "";
+const headsUp = list => list.length ? `<div class="glass pad stack headsup" style="gap:10px"><p class="tag" style="color:var(--live)">Heads up</p>${list.map(c => `<div><b>${esc(c.title)}</b> <span class="tag" style="display:inline">${esc(whenLabel({ date: c.date, start: c.start || "18:30" }).split(" · ")[0])}</span>${c.note ? `<p class="muted small" style="margin-top:2px">${esc(c.note)}</p>` : ""}</div>`).join("")}</div>` : "";
 function specialCard(e){
   return `<div class="next" style="${bgi(evPhoto(e))}">
     <span class="live"><i></i><span class="tag" style="color:var(--ink)">${esc(daysAway(e))}</span></span>
@@ -514,7 +512,7 @@ function vHome(){
   const band = Array(4).fill(words.map(w => `<span>${w} ✦</span>`).join("")).join("");
   return `<section class="view">
     <div class="hero">
-      <span class="live ${n.live ? "now" : ""}"><i></i><span class="tag" style="color:var(--ink)">${n.live ? "Live now" : "Wed " + MONTHS[n.at.getMonth()] + " " + n.at.getDate() + " · 7 PM · The Gym"}</span></span>
+      <span class="live ${n.live ? "now" : ""}"><i></i><span class="tag" style="color:var(--ink)">${n.live ? "Live now" : "Wed " + MONTHS[n.at.getMonth()] + " " + n.at.getDate() + " · 6:30 PM · The Gym"}</span></span>
       <h1 class="big h1">Abide<br><span class="outline">Youth</span></h1>
       <div id="count">${countHTML()}</div>
       <p class="muted" style="max-width:32ch">Wednesdays at 7 in the Gym. 6th–12th grade. Bring a friend.</p>
