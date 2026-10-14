@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="10";</script>
+<script>window.BUILD="11";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -47,11 +47,9 @@ button{font:inherit;color:inherit}
 
 /* ---------- full-page photo background ---------- */
 #bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--night)}
-#bg .ph{position:absolute;inset:-4%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.6s ease;will-change:transform,opacity}
-#bg .ph.on{opacity:1;animation:drift 9s ease-out both}
-#bg .ph:nth-child(2).on{animation-name:drift2}
-@keyframes drift{from{transform:scale(1.14) translate3d(1.5%,1%,0)}to{transform:scale(1.03) translate3d(0,0,0)}}
-@keyframes drift2{from{transform:scale(1.03) translate3d(-1%,0,0)}to{transform:scale(1.14) translate3d(1%,-1.5%,0)}}
+#bg .ph{position:absolute;inset:-4%;background-size:cover;background-position:center;opacity:0;transition:opacity .9s ease;animation:drift 28s ease-in-out infinite alternate}
+#bg .ph.on{opacity:1}
+@keyframes drift{from{transform:scale(1.02) translate3d(0,0,0)}to{transform:scale(1.12) translate3d(-1.5%,-2%,0)}}
 #bg::after{content:"";position:absolute;inset:0;
   background:
     linear-gradient(180deg,rgba(7,8,13,.25) 0%,rgba(7,8,13,.35) 30%,rgba(7,8,13,.82) 68%,rgba(7,8,13,.96) 100%),
@@ -243,25 +241,6 @@ select option{background:#15171f}
 .ecard.artcard{background:#07080d;padding:0;aspect-ratio:4/5}
 .ecard.artcard.solo{min-height:0;aspect-ratio:4/5}
 .artbox{position:relative;aspect-ratio:4/5;border-radius:26px;overflow:hidden;box-shadow:0 0 0 1px var(--edge)}
-
-/* band + photo strip crossing like tape */
-.cross{position:relative;padding-block:6px 18px}
-.cross .band{position:relative;z-index:2}
-.strip{position:relative;z-index:1;margin:-6px -30px 0;transform:rotate(2.5deg);background:#f4f1ea;padding:8px 0;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.5)}
-.strip .track{display:flex;gap:8px;width:max-content;animation:marq 60s linear infinite reverse}
-.strip .fr{width:118px;height:84px;border-radius:3px;background:#222 center/cover;flex:none;filter:saturate(1.08) contrast(1.05)}
-/* first Wednesday mosaic */
-.mosaic{display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;height:340px}
-.mosaic figure{margin:0;position:relative;border-radius:22px;overflow:hidden;background:#111 center/cover;display:flex;align-items:flex-end;padding:12px}
-.mosaic figure.tall{grid-row:span 2}
-.mosaic figure::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,13,0) 35%,rgba(7,8,13,.88))}
-.mosaic figcaption{position:relative;font-size:12.5px;line-height:1.3;color:var(--ink-2)}
-.mosaic figcaption b{display:block;font-family:var(--display);font-weight:900;font-size:30px;line-height:.9;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
-/* leaders group photo */
-.groupshot{margin:0;position:relative;border-radius:26px;overflow:hidden;aspect-ratio:16/10;background:#111 center/cover;display:flex;align-items:flex-end;padding:16px;transform:rotate(-1.2deg);box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px var(--edge)}
-.groupshot::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,13,0) 40%,rgba(7,8,13,.85))}
-.groupshot figcaption{position:relative;display:flex;flex-direction:column;gap:4px}
-.groupshot b{font-family:var(--display);font-weight:900;font-size:32px;line-height:.9;text-transform:uppercase}
 /* ---------- leaders ---------- */
 .leaders{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:14px;border-radius:22px;aspect-ratio:3/4;max-width:100%;overflow:hidden}
@@ -358,9 +337,9 @@ const DATA = {
   },
   // Weekly gatherings. day: 0=Sun … 6=Sat. The calendar fills in the next 6 weeks automatically.
   recurring: [
-    { title: "Abide Youth", who: "6th–12th", day: 3, start: "18:30", place: "Gym", photo: "worship-2", about: "Wednesday night youth for 6th–12th grade. Prayer 5:00–5:30, service starts at 6:30." },
-    { title: "Club58 & Abide HS", who: "5th–12th", day: 0, start: "09:45", place: "The Rock", photo: "sep-25-night-2", about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
-    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "17:30", end: "19:00", place: "Guys: Room 6 · Girls: leader homes", photo: "nov-25-night-1", about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
+    { title: "Abide Youth", who: "6th–12th", day: 3, start: "18:30", place: "Gym", photo: 38, about: "Wednesday night youth for 6th–12th grade. Prayer 5:00–5:30, service starts at 6:30." },
+    { title: "Club58 & Abide HS", who: "5th–12th", day: 0, start: "09:45", place: "The Rock", photo: 21, about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
+    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "17:30", end: "19:00", place: "Guys: Room 6 · Girls: leader homes", photo: 6, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
   ],
   // Changes to the weekly rhythm (no youth, moved, different room). date = YYYY-MM-DD.
   // Example: { date: "2026-11-25", title: "No Abide Youth", note: "Happy Thanksgiving! See you Dec 2.", noYouth: true }
@@ -371,7 +350,7 @@ const DATA = {
   events: [
     { id: "fallbash", title: "Fall Bash", date: "2026-10-28", start: "18:30", end: "21:00", place: "The Rock", art: "tailgate", replaces: true,
       about: "Tailgate theme! Come dressed in your favorite sports attire: jersey, mascot, cheerleader, or full tailgate gear. Bring a friend." },
-    { id: "retreat", title: "Winter Retreat", date: "2027-01-01", endDate: "2027-01-04", allDay: true, place: "", photo: "summer-camp-26-1", featured: true,
+    { id: "retreat", title: "Winter Retreat", date: "2027-01-01", endDate: "2027-01-04", allDay: true, place: "", photo: 35, featured: true,
       link: "https://therock.ccbchurch.com/goto/forms/2223/responses/new",
       // Price tiers: each price holds through its "until" date (last day at that price).
       prices: [ { amount: 260, until: "2026-10-16" }, { amount: 275 } ],
@@ -380,7 +359,7 @@ const DATA = {
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
     {
-      id: "obedience", photo: "worship", series: "Study 1 · 10.07.26", title: "Wholehearted Obedience",
+      id: "obedience", photo: 37, series: "Study 1 · 10.07.26", title: "Wholehearted Obedience",
       passage: { label: "1 Samuel 15:7–26", ref: "1SA.15.7-26" },
       keyVerse: { text: "Has the LORD as great delight in burnt offerings and sacrifices, as in obeying the voice of the LORD?", cite: "1 Samuel 15:22a" },
       intro: [
@@ -409,54 +388,8 @@ const DATA = {
     { name: "Kristi Polhemus", role: "Leader", photo: "" }
   ]};
 
-/* Photo library. Files live in photos/ (full size) and photos/sm/ (small, for cards).
-   Refer to a photo anywhere by its name, e.g. photo: "worship-2".
-   pos = which part of the photo stays in view when it's cropped (x% y%). */
-const PHOTOS = {
-  "worship":              { album: "Worship", pos: "62% 50%" },
-  "worship-2":            { album: "Worship", pos: "32% 50%" },
-  "ywam-launch-1":        { album: "YWAM Launch" },
-  "ywam-launch-2":        { album: "YWAM Launch" },
-  "ywam-launch-3":        { album: "YWAM Launch", pos: "60% 50%" },
-  "ywam-launch-4":        { album: "YWAM Launch" },
-  "senior-night-26-1":    { album: "Senior Night", when: "26" },
-  "senior-night-26-2":    { album: "Senior Night", when: "26" },
-  "senior-night-26-3":    { album: "Senior Night", when: "26", pos: "45% 50%" },
-  "senior-night-26-4":    { album: "Senior Night", when: "26" },
-  "senior-night-26-5":    { album: "Senior Night", when: "26", pos: "48% 50%" },
-  "senior-night-26-6":    { album: "Senior Night", when: "26", pos: "40% 50%" },
-  "senior-night-26-7":    { album: "Senior Night", when: "26" },
-  "senior-night-26-8":    { album: "Senior Night", when: "26", pos: "62% 50%" },
-  "sep-26-night-1":       { album: "Youth Night", when: "26", pos: "50% 30%" },
-  "sep-26-night-2":       { album: "Youth Night", when: "26" },
-  "summer-camp-26-1":     { album: "Summer Camp", when: "26" },
-  "summer-camp-26-2":     { album: "Summer Camp", when: "26", pos: "50% 70%" },
-  "summer-camp-02":       { album: "Summer Camp", pos: "45% 50%" },
-  "summer-camp-03":       { album: "Summer Camp", pos: "35% 50%" },
-  "summer-camp-04":       { album: "Summer Camp", pos: "52% 40%" },
-  "summer-camp-07":       { album: "Summer Camp", pos: "60% 50%" },
-  "summer-camp-12":       { album: "Summer Camp" },
-  "back-to-school-bash":  { album: "Back to School Bash" },
-  "christmas-party-25":   { album: "Christmas Party", when: "25" },
-  "nov-25-night-1":       { album: "Youth Night", when: "25" },
-  "nov-25-night-2":       { album: "Youth Night", when: "25" },
-  "nov-25-night-3":       { album: "Youth Night", when: "25" },
-  "nov-25-night-4":       { album: "Youth Night", when: "25" },
-  "nov-25-night-5":       { album: "Youth Night", when: "25" },
-  "nov-25-night-6":       { album: "Youth Night", when: "25" },
-  "sep-25-night-1":       { album: "Youth Night", when: "25", pos: "40% 50%" },
-  "sep-25-night-2":       { album: "Youth Night", when: "25", pos: "45% 50%" },
-  "sep-25-night-3":       { album: "Youth Night", when: "25", pos: "55% 50%" },
-  "sep-25-night-4":       { album: "Youth Night", when: "25", pos: "52% 50%" },
-  "sep-25-night-5":       { album: "Youth Night", when: "25", pos: "70% 50%" },
-  "sep-25-night-6":       { album: "Youth Night", when: "25", pos: "60% 50%" },
-  "sep-25-night-7":       { album: "Youth Night", when: "25", pos: "42% 50%" },
-  "sep-25-night-8":       { album: "Youth Night", when: "25" },
-  "car-wash-25-1":        { album: "Car Wash", when: "25" },
-  "car-wash-25-2":        { album: "Car Wash", when: "25" },
-  "car-wash-25-3":        { album: "Car Wash", when: "25" },
-  "car-wash-25-4":        { album: "Car Wash", when: "25" }
-};
+/* Photos, newest album first. Files live in the photos/ folder. */
+const PHOTOS = [{"src": "photos/back-to-school-bash.jpg", "album": "Back to School Bash", "w": 1600, "h": 1067}, {"src": "photos/car-wash-25-1.jpg", "album": "Car Wash", "when": "2025", "w": 1080, "h": 1350}, {"src": "photos/car-wash-25-2.jpg", "album": "Car Wash", "when": "2025", "w": 1080, "h": 1350}, {"src": "photos/car-wash-25-3.jpg", "album": "Car Wash", "when": "2025", "w": 1080, "h": 1350}, {"src": "photos/car-wash-25-4.jpg", "album": "Car Wash", "when": "2025", "w": 1080, "h": 1350}, {"src": "photos/christmas-party-25.jpg", "album": "Christmas Party", "when": "2025", "w": 1200, "h": 1600}, {"src": "photos/nov-25-night-1.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/nov-25-night-2.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/nov-25-night-3.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/nov-25-night-4.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/nov-25-night-5.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/nov-25-night-6.jpg", "album": "Youth Night", "when": "Nov 2025", "w": 1067, "h": 1600}, {"src": "photos/senior-night-26-1.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-2.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-3.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-4.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-5.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-6.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-7.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/senior-night-26-8.jpg", "album": "Senior Night", "when": "May 2026", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-1.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-2.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-3.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-4.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-5.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-6.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-7.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-25-night-8.jpg", "album": "Youth Night", "when": "Sep 2025", "w": 1600, "h": 1067}, {"src": "photos/sep-26-night-1.jpg", "album": "Youth Night", "when": "Sep 2026", "w": 1067, "h": 1600}, {"src": "photos/sep-26-night-2.jpg", "album": "Youth Night", "when": "Sep 2026", "w": 1067, "h": 1600}, {"src": "photos/summer-camp-02.jpg", "album": "Summer Camp", "w": 1600, "h": 1067}, {"src": "photos/summer-camp-03.jpg", "album": "Summer Camp", "w": 1600, "h": 1067}, {"src": "photos/summer-camp-04.jpg", "album": "Summer Camp", "w": 1600, "h": 1067}, {"src": "photos/summer-camp-07.jpg", "album": "Summer Camp", "w": 1600, "h": 1067}, {"src": "photos/summer-camp-12.jpg", "album": "Summer Camp", "w": 1067, "h": 1600}, {"src": "photos/summer-camp-26-1.jpg", "album": "Summer Camp", "when": "2026", "w": 1600, "h": 901}, {"src": "photos/summer-camp-26-2.jpg", "album": "Summer Camp", "when": "2026", "w": 1200, "h": 1600}, {"src": "photos/worship.jpg", "album": "Worship", "w": 1600, "h": 1067}, {"src": "photos/worship-2.jpg", "album": "Worship", "w": 1600, "h": 1067}, {"src": "photos/ywam-launch-1.jpg", "album": "YWAM Launch", "w": 1067, "h": 1600}, {"src": "photos/ywam-launch-2.jpg", "album": "YWAM Launch", "w": 1067, "h": 1600}, {"src": "photos/ywam-launch-3.jpg", "album": "YWAM Launch", "w": 1067, "h": 1600}, {"src": "photos/ywam-launch-4.jpg", "album": "YWAM Launch", "w": 1067, "h": 1600}];
 
 /* Bible versions on bible.com (YouVersion). Links open the Bible app when it's installed. */
 const VERSIONS = [
@@ -517,24 +450,12 @@ const TABS = [
   { id:"visit", label:"Visit", icon:I.pin },
   { id:"leaders", label:"Leaders", icon:I.people }
 ];
-/* Photos that slowly rotate behind each page (first one shows first). */
-const BG = {
-  home:     ["ywam-launch-2", "senior-night-26-3", "worship-2", "ywam-launch-4", "summer-camp-26-1", "sep-25-night-7", "car-wash-25-2", "senior-night-26-5"],
-  calendar: ["summer-camp-02", "car-wash-25-1", "christmas-party-25", "summer-camp-03", "back-to-school-bash", "summer-camp-07"],
-  studies:  ["ywam-launch-1", "worship", "ywam-launch-3", "sep-25-night-1"],
-  visit:    ["sep-25-night-8", "senior-night-26-1", "nov-25-night-1", "sep-25-night-4"],
-  leaders:  ["sep-26-night-2", "sep-25-night-2", "summer-camp-04", "sep-25-night-3", "nov-25-night-2"]
-};
-/* Polaroids you can flick through on Home. */
-const POLA = ["car-wash-25-2", "nov-25-night-3", "summer-camp-26-2", "christmas-party-25", "nov-25-night-5", "senior-night-26-2", "summer-camp-12", "car-wash-25-4", "nov-25-night-6"];
-/* The photo strip that scrolls across Home. */
-const STRIP = ["summer-camp-02", "nov-25-night-1", "ywam-launch-4", "car-wash-25-3", "senior-night-26-6", "worship", "summer-camp-07", "nov-25-night-4", "sep-25-night-6", "back-to-school-bash", "ywam-launch-1", "senior-night-26-4"];
-const img = k => PHOTOS[k] ? `photos/${k}.jpg` : "";
-const sm = k => PHOTOS[k] ? `photos/sm/${k}.jpg` : "";
-const posOf = k => (PHOTOS[k] && PHOTOS[k].pos) || "center";
-const bgi = k => `background-image:url('${img(k)}');background-position:${posOf(k)}`;
-const bgs = k => `background-image:url('${sm(k)}');background-position:${posOf(k)}`;
-const capOf = k => { const p = PHOTOS[k] || {}; return (p.album || "").toLowerCase() + (p.when ? " '" + p.when : ""); };
+/* Which photo sits behind each page (index into PHOTOS). */
+const BG = { home:40, calendar:30, studies:39, visit:28, leaders:33 };
+/* Photos that get tossed around in the home polaroid stack. */
+const POLA = [2, 1, 8, 4, 13, 31, 34, 5, 17];
+const img = i => PHOTOS[i] ? PHOTOS[i].src : "";
+const bgi = i => `background-image:url('${img(i)}')`;
 
 /* ---------- next-gathering countdown ---------- */
 /* Always counts down to the next Wednesday at 6:30 PM. Shows "live" from 6:30 to 9 PM on Wednesdays. */
@@ -557,7 +478,7 @@ function countHTML(){
   return `<div class="count"><div><b>${d}</b><span>${d === 1 ? "DAY" : "DAYS"}</span></div><div><b>${p(h)}</b><span>HRS</span></div><div><b>${p(m)}</b><span>MIN</span></div><p class="until">until<br>youth</p></div>`;
 }
 const whenLabel = e => { const d = parseD(e.date); return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()} · ${fmtT(e.start)}`; };
-const evPhoto = e => e.photo || "senior-night-26-2";
+const evPhoto = e => e.photo ?? 38;
 
 /* ---------- pieces ---------- */
 const refPill = r => `<a class="pill ghost" href="${bibleUrl(r.ref)}" target="_blank" rel="noopener">${esc(r.label)} <span style="opacity:.6;font-family:var(--mono);font-size:11px">${vAbbr()}</span> ${I.out}</a>`;
@@ -675,8 +596,7 @@ function vHome(){
       <p class="muted" style="max-width:32ch">Wednesdays at 6:30 in the Gym. 6th–12th grade. Bring a friend.</p>
     </div>
 
-    <div class="cross"><div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
-    <div class="strip" aria-hidden="true"><div class="track">${[...STRIP, ...STRIP].map((k, i) => `<span class="fr" style="${bgs(k)}"></span>`).join("")}</div></div></div>
+    <div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
 
     ${feat.map(retreatCard).join("")}
 
@@ -697,7 +617,7 @@ function vHome(){
           <div><p class="tag" style="color:var(--ink);margin-bottom:6px">${esc(daysAway(sp[0]))}</p><p class="big h2">${esc(sp[0].title)}</p><p class="tag" style="margin-top:8px">${esc(MONTHS[parseD(sp[0].date).getMonth()])} ${parseD(sp[0].date).getDate()} · ${fmtT(sp[0].start)} · ${esc(sp[0].place)}</p>
           ${sp[0].link ? `<span class="pill white" style="margin-top:12px">Sign up ${I.out}</span>` : ""}</div>
         </a>` : `<div class="rail">${sp.map(e => e.art ? `<a class="ecard artcard" href="#calendar" aria-label="${esc(e.title)}"><div class="art">${ART[e.art]()}</div></a>` : `
-        <a class="ecard" href="#calendar" style="${bgs(evPhoto(e))}">
+        <a class="ecard" href="#calendar" style="${bgi(evPhoto(e))}">
           <span class="datechip"><small>${DAYS[parseD(e.date).getDay()].toUpperCase()}</small><b>${parseD(e.date).getDate()}</b></span>
           <div><p class="h3">${esc(e.title)}</p><p class="tag" style="margin-top:6px">${esc(MONTHS[parseD(e.date).getMonth()])} ${parseD(e.date).getDate()} · ${fmtT(e.start)}</p></div>
         </a>`).join("")}</div>`}
@@ -711,7 +631,7 @@ function vHome(){
 
     <div class="stack">
       <p class="tag">Recent memories</p>
-      <div class="stackwrap" id="pstack">${POLA.map((pk, k) => { const r = [-6, 4, -2, 7, -4, 3, -7, 5, -1][k % 9]; return `<figure class="pola" data-k="${k}" style="transform:rotate(${r}deg);z-index:${POLA.length - k}"><img src="${sm(pk)}" alt="${esc(PHOTOS[pk].album)}" style="object-position:${posOf(pk)}" loading="lazy"><p>${esc(capOf(pk))}</p></figure>`; }).join("")}</div>
+      <div class="stackwrap" id="pstack">${POLA.map((pi, k) => { const p = PHOTOS[pi]; const r = [-6, 4, -2, 7, -4, 3, -7, 5, -1][k % 9]; return `<figure class="pola" data-k="${k}" style="transform:rotate(${r}deg);z-index:${POLA.length - k}"><img src="${p.src}" alt="${esc(p.album)}" loading="lazy"><p>${esc(p.album.toLowerCase())}${p.when ? " '" + p.when.slice(-2) : ""}</p></figure>`; }).join("")}</div>
       <p class="hint">Tap or swipe for the next one</p>
     </div>
 
@@ -732,7 +652,7 @@ function vCalendar(){
     <div class="stack" style="gap:10px">
       <p class="wk">Every week</p>
       ${DATA.recurring.map(r => { const e = { ...r, date: nextOf(r), weekly: true }; return `<details class="ev glass">
-        <summary><span class="thumb" style="${bgs(evPhoto(r))}"><span>${DAYS[r.day].toUpperCase()}</span></span>
+        <summary><span class="thumb" style="${bgi(evPhoto(r))}"><span>${DAYS[r.day].toUpperCase()}</span></span>
           <div style="min-width:0"><p class="t">${esc(r.title)}</p><p class="m">${DAYFULL[r.day]} · ${fmtT(r.start)}${r.end ? "–" + fmtT(r.end) : ""}${r.who ? " · " + esc(r.who) : ""}</p></div>${I.chev}</summary>
         <div class="body"><p class="muted small">${esc(r.place)}${r.about ? " — " + esc(r.about) : ""}</p>
           <div class="pills"><a class="pill ghost" href="${gcal(e)}" target="_blank" rel="noopener">${I.plus} Add weekly to calendar</a></div></div>
@@ -778,14 +698,6 @@ function vVisit(){
     <div class="glass" style="padding:4px 0">${c.times.map(t => {
       const [time, ap] = t.time.split(" ");
       return `<div class="trow"><div class="when">${esc(time)}${ap ? `<small>${esc(ap)}</small>` : ""}</div><b>${esc(t.label)}</b><p><span style="color:var(--ink)">${esc(t.day)}</span>${t.sub ? " · " + esc(t.sub) : ""}</p></div>`; }).join("")}</div>
-    <div class="stack">
-      <p class="tag">Your first Wednesday</p>
-      <div class="mosaic">
-        <figure class="tall" style="${bgs("nov-25-night-4")}"><figcaption><b>Hang</b>Games, snacks, friends, chess if you're brave</figcaption></figure>
-        <figure style="${bgs("worship-2")}"><figcaption><b>Worship</b>Loud, real, all in</figcaption></figure>
-        <figure style="${bgs("sep-26-night-1")}"><figcaption><b>Word</b>A message that hits home</figcaption></figure>
-      </div>
-    </div>
     <div class="glass pad stack">
       <p class="tag">Find us</p>
       <p class="addr" id="addr">${c.address.slice(1).map(esc).join("<br>")}</p>
@@ -809,7 +721,6 @@ function vVisit(){
 function vLeaders(){
   return `<section class="view">
     <div class="pagehead"><p class="tag">Here for you</p><h1 class="big h1">The<br><span class="outline">Crew</span></h1></div>
-    <figure class="groupshot" style="${bgi("summer-camp-26-1")}"><figcaption><span class="tag" style="color:var(--ink)">Summer Camp '26</span><b>There's a seat for you</b></figcaption></figure>
     <div class="leaders">${DATA.leaders.map((l, k) => {
       const ws = l.name.split(/\s+/).filter(w => /^[A-Za-z]/.test(w));
       const ini = (l.name.includes("&") ? ws[0][0] + "&" + ws[1][0] : ws[0][0] + ws[ws.length - 1][0]).toUpperCase();
@@ -822,25 +733,13 @@ function vLeaders(){
   </section>`;
 }
 
-/* ---------- background: each page slowly rotates through its photos ---------- */
-let bgFlip = 0, bgNow = "", bgList = [], bgAt = 0, bgTimer = null;
-const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-function showBg(k){
-  if (!k || k === bgNow) return; bgNow = k;
+/* ---------- background ---------- */
+let bgFlip = 0, bgNow = "";
+function setBg(src){
+  if (!src || src === bgNow) return; bgNow = src;
   const layers = document.querySelectorAll("#bg .ph"); bgFlip = 1 - bgFlip;
   const on = layers[bgFlip], off = layers[1 - bgFlip];
-  const pre = new Image(); pre.onload = pre.onerror = () => {
-    if (bgNow !== k) return;
-    on.style.backgroundImage = `url('${img(k)}')`; on.style.backgroundPosition = posOf(k);
-    on.classList.remove("on"); void on.offsetWidth; on.classList.add("on"); off.classList.remove("on");
-    const nx = bgList[(bgAt + 1) % bgList.length]; if (nx) { const p = new Image(); p.src = img(nx); }
-  }; pre.src = img(k);
-}
-function setBg(list){
-  list = list.filter(k => PHOTOS[k]); if (!list.length) return;
-  if (list.join() !== bgList.join()) { bgList = list; bgAt = 0; showBg(list[0]); }
-  clearInterval(bgTimer);
-  if (!still && bgList.length > 1) bgTimer = setInterval(() => { if (document.hidden) return; bgAt = (bgAt + 1) % bgList.length; showBg(bgList[bgAt]); }, 7000);
+  const pre = new Image(); pre.onload = pre.onerror = () => { on.style.backgroundImage = `url('${src}')`; on.classList.add("on"); off.classList.remove("on"); }; pre.src = src;
 }
 
 /* ---------- polaroid stack ---------- */
@@ -865,10 +764,10 @@ let tick = null;
 function route(){
   const h = (location.hash || "#home").slice(1);
   let html, tab = h, bg;
-  if (h.startsWith("study-")) { const s = DATA.studies.find(x => x.id === h.slice(6)); html = vStudy(h.slice(6)); tab = "studies"; bg = s ? [s.photo, ...BG.studies] : null; }
+  if (h.startsWith("study-")) { const s = DATA.studies.find(x => x.id === h.slice(6)); html = vStudy(h.slice(6)); tab = "studies"; bg = s ? img(s.photo) : null; }
   else html = ({ home:vHome, calendar:vCalendar, studies:vStudies, visit:vVisit, leaders:vLeaders }[h] || vHome)();
   if (!TABS.some(t => t.id === tab)) tab = "home";
-  setBg(bg || BG[tab]);
+  setBg(bg || img(BG[tab]));
   $("#view").innerHTML = html;
   $("#tabs").innerHTML = TABS.map(t => `<a href="#${t.id}" ${t.id === tab ? 'aria-current="page"' : ""}>${t.icon}${t.label}</a>`).join("");
   window.scrollTo(0, 0); onScroll();
