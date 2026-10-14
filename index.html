@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="11";</script>
+<script>window.BUILD="12";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -322,7 +322,7 @@ const DATA = {
       { label: "Prayer", day: "Wednesdays", time: "5–5:30 PM", sub: "Before youth" },
       { label: "Abide Youth", day: "Wednesdays", time: "6:30 PM", sub: "6th–12th grade · Gym" },
       { label: "Club58 & Abide HS", day: "Sundays", time: "9:45 AM", sub: "5th–8th and 9th–12th · Worship, then break out" },
-      { label: "Discipleship Groups", day: "Mondays", time: "5:30–7 PM", sub: "High school guys in Room 6 · girls at leader homes" }
+      { label: "Discipleship Groups", day: "Mondays", time: "5:30–7 PM", sub: "High school · Meet at church" }
     ],
     contact: [
       { label: "Youth pastor", value: "jaden@therock.org", href: "mailto:jaden@therock.org" },
@@ -339,7 +339,7 @@ const DATA = {
   recurring: [
     { title: "Abide Youth", who: "6th–12th", day: 3, start: "18:30", place: "Gym", photo: 38, about: "Wednesday night youth for 6th–12th grade. Prayer 5:00–5:30, service starts at 6:30." },
     { title: "Club58 & Abide HS", who: "5th–12th", day: 0, start: "09:45", place: "The Rock", photo: 21, about: "Worship together, then Club58 (5th–8th) and Abide HS (9th–12th) break out." },
-    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "17:30", end: "19:00", place: "Guys: Room 6 · Girls: leader homes", photo: 6, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact Olivia@therock.org." }
+    { title: "HS Discipleship Groups", who: "9th–12th", day: 1, start: "17:30", end: "19:00", place: "Meet at church", photo: 6, about: "High school discipleship groups. Guys contact Jaden@therock.org, girls contact OliviaH@therock.org." }
   ],
   // Changes to the weekly rhythm (no youth, moved, different room). date = YYYY-MM-DD.
   // Example: { date: "2026-11-25", title: "No Abide Youth", note: "Happy Thanksgiving! See you Dec 2.", noYouth: true }
@@ -363,7 +363,7 @@ const DATA = {
       passage: { label: "1 Samuel 15:7–26", ref: "1SA.15.7-26" },
       keyVerse: { text: "Has the LORD as great delight in burnt offerings and sacrifices, as in obeying the voice of the LORD?", cite: "1 Samuel 15:22a" },
       intro: [
-        "In 1 Samuel 15, Saul disobeys the voice of the Lord given through Samuel by attacking the Amalekites but not fully destroying them. Later, he lies to Samuel and says he did fully obey the Lord, and tries to justify why. Once confronted. Saul confesses it was because he was \u201cafraid of the people.\u201d"
+        "In 1 Samuel 15, Saul disobeys the Lord\u2019s command, delivered through Samuel, by failing to completely destroy the Amalekites. He then lies to Samuel, claiming that he has obeyed the Lord, and attempts to justify his actions. When confronted, however, Saul admits that he acted out of fear, confessing that he was \u201cafraid of the people.\u201d"
       ],
       questions: [
         "1 Sam 15:22 and Psalm 51:16 show us that God cares more about our hearts than our actions. Why do you think God cares more about our inward obedience than our outward actions?",
@@ -451,9 +451,9 @@ const TABS = [
   { id:"leaders", label:"Leaders", icon:I.people }
 ];
 /* Which photo sits behind each page (index into PHOTOS). */
-const BG = { home:40, calendar:30, studies:39, visit:28, leaders:33 };
+const BG = { home:14, calendar:0, studies:13, visit:28, leaders:42 };
 /* Photos that get tossed around in the home polaroid stack. */
-const POLA = [2, 1, 8, 4, 13, 31, 34, 5, 17];
+const POLA = [36, 2, 40, 1, 8, 33, 4, 13, 31, 34, 5, 17];
 const img = i => PHOTOS[i] ? PHOTOS[i].src : "";
 const bgi = i => `background-image:url('${img(i)}')`;
 
