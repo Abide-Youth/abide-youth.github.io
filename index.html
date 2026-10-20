@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="13";</script>
+<script>window.BUILD="14";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -359,18 +359,18 @@ const DATA = {
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
     {
-      id: "obedience", photo: 37, series: "Study 1 · 10.07.26", title: "Wholehearted Obedience",
-      passage: { label: "1 Samuel 15:7–26", ref: "1SA.15.7-26" },
-      keyVerse: { text: "Has the LORD as great delight in burnt offerings and sacrifices, as in obeying the voice of the LORD?", cite: "1 Samuel 15:22a" },
+      id: "after-his-heart", photo: 37, series: "Study 2 · 10.14.26", title: "After His Heart",
+      passage: { label: "1 Samuel 13:14", ref: "1SA.13.14" },
+      keyVerse: { text: "But now your kingdom shall not continue. The LORD has sought out a man after his own heart, and the LORD has commanded him to be prince over his people, because you have not kept what the LORD commanded you.", cite: "1 Samuel 13:14" },
       intro: [
-        "In 1 Samuel 15, Saul disobeys the Lord\u2019s command, delivered through Samuel, by failing to completely destroy the Amalekites. He then lies to Samuel, claiming that he has obeyed the Lord, and attempts to justify his actions. When confronted, however, Saul admits that he acted out of fear, confessing that he was \u201cafraid of the people.\u201d"
+        "In 1 Samuel 13, King Saul disobeys the command of God, and as a result the LORD removes the kingdom from him and gives it to a man after His own heart. This man is David. Both King Saul and King David were good leaders and good military commanders, and both of them sinned and failed. So what separates them? David was after God’s heart, and Saul wasn’t."
       ],
       questions: [
-        "1 Sam 15:22 and Psalm 51:16 show us that God cares more about our hearts than our actions. Why do you think God cares more about our inward obedience than our outward actions?",
-        "In 1 Sam 15:24, Saul tells Samuel he sinned because he was afraid of the people and obeyed them. Have you ever let peer pressure influence the way you responded to God? Why or why not?",
-        "Have you ever had a moment in your faith where you felt you were obedient, but not all the way? What was that like? Did you have an opportunity to be fully obedient later on?"
+        "In your own words, what does it mean to be a man or woman after God’s heart?",
+        "What areas of your life are you like Saul (fearful of other people’s opinions, doubtful in your own ability, etc.)?",
+        "What areas of your life are you like David (trusting God, after His heart, etc.)?"
       ],
-      more: [ { label: "Psalm 51:16–17", ref: "PSA.51.16-17" }, { label: "Psalm 119:10", ref: "PSA.119.10" }, { label: "Revelation 2:1–7", ref: "REV.2.1-7" } ]
+      more: []
     }
   ],
   // Add photo: "data:image/jpeg;base64,..." or a file path once photos are ready.
@@ -686,7 +686,7 @@ function vStudy(id){
     <blockquote class="verse glass pad" style="${s.keyVerse.text.length > 90 ? "font-size:clamp(24px,7vw,32px)" : ""}">“${esc(s.keyVerse.text)}”<cite>${esc(s.keyVerse.cite)}</cite></blockquote>
     <div class="reader glass pad">${s.intro.map(p => `<p>${esc(p)}</p>`).join("")}</div>
     <div class="stack"><p class="tag">Talk about it</p><ol class="qs">${s.questions.map(q => `<li class="glass">${esc(q)}</li>`).join("")}</ol></div>
-    <div class="stack"><p class="tag">Go deeper</p><div class="pills">${s.more.map(refPill).join("")}</div></div>
+    ${s.more.length ? `<div class="stack"><p class="tag">Go deeper</p><div class="pills">${s.more.map(refPill).join("")}</div></div>` : ""}
     ${versionPicker()}
   </section>`;
 }
