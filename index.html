@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="15";</script>
+<script>window.BUILD="16";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -361,6 +361,8 @@ const DATA = {
       prices: [ { amount: 260, until: "2026-10-16" }, { amount: 275 } ],
       about: "Kick off the new year with four days away together. Grab your spot now." }
   ],
+  // Studies now come from the "Abide Youth App – Content" Google Sheet (see CONTENT_SHEET below);
+  // the pastors edit it and the app picks it up on its own. These are only the offline fallback.
   // Newest study goes FIRST. Older ones stay below it and become the Studies catalog. No dates.
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
@@ -432,7 +434,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 const MONTHS_L = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const parseD = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
-const fmtT = t => { let [h,m] = t.split(":").map(Number); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return m ? `${h}:${String(m).padStart(2,"0")} ${ap}` : `${h} ${ap}`; };
+const fmtT = t => { if (!t) return "All day"; let [h,m] = t.split(":").map(Number); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return m ? `${h}:${String(m).padStart(2,"0")} ${ap}` : `${h} ${ap}`; };
 const today = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
 const expand = () => { const out = []; const t0 = today(); for (let i = 0; i < 28; i++) { const d = new Date(t0); d.setDate(t0.getDate() + i); DATA.recurring.forEach(r => { if (r.day === d.getDay()) out.push({ ...r, date: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}` }); }); } return out; };
 const upcoming = () => [...DATA.events, ...expand().filter(r => !DATA.events.some(e => e.replaces && e.date === r.date))].filter(e => parseD(e.endDate || e.date) >= today()).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
@@ -497,8 +499,10 @@ function countHTML(){
   const p = x => String(x).padStart(2, "0");
   return `<div class="count"><div><b>${d}</b><span>${d === 1 ? "DAY" : "DAYS"}</span></div><div><b>${p(h)}</b><span>HRS</span></div><div><b>${p(m)}</b><span>MIN</span></div><p class="until">until<br>youth</p></div>`;
 }
-const whenLabel = e => { const d = parseD(e.date); return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()} · ${fmtT(e.start)}`; };
+const whenLabel = e => { const d = parseD(e.date); if (e.allDay && e.endDate) return `${DAYS[d.getDay()]}–${DAYS[parseD(e.endDate).getDay()]} · ${rangeLabel(e)}`; return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()} · ${fmtT(e.start)}`; };
 const evPhoto = e => e.photo ?? 38;
+/* Shrinks a big headline when one word is too long to fit the card (titles typed into the sheet can be anything). */
+const fit = (s, vw = 130) => { const n = Math.max(...String(s).split(/\s+/).map(w => w.length)); return n > 9 ? ` style="font-size:clamp(26px,${Math.floor(vw / n)}vw,64px)"` : ""; };
 
 /* ---------- pieces ---------- */
 const refPill = r => `<a class="pill ghost" href="${bibleUrl(r.ref)}" target="_blank" rel="noopener">${esc(r.label)} <span style="opacity:.6;font-family:var(--mono);font-size:11px">${vAbbr()}</span> ${I.out}</a>`;
@@ -593,7 +597,7 @@ function specialCard(e){
     <div class="glass pad stack" style="gap:10px"><span class="tag" style="color:var(--stage)">${esc(daysAway(e))} · ${esc(whenLabel(e))}${e.place ? " · " + esc(e.place) : ""}</span>${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}<div class="pills">${addCal(e)}</div></div></div>`;
   return `<div class="next" style="${bgi(evPhoto(e))}">
     <span class="live"><i></i><span class="tag" style="color:var(--ink)">${esc(daysAway(e))}</span></span>
-    <div class="stack" style="gap:10px"><p class="big h2">${esc(e.title)}</p><p class="tag" style="color:var(--ink)">${esc(evWhen(e))}${e.place ? " · " + esc(e.place) : ""}</p>
+    <div class="stack" style="gap:10px"><p class="big h2"${fit(e.title)}>${esc(e.title)}</p><p class="tag" style="color:var(--ink)">${esc(evWhen(e))}${e.place ? " · " + esc(e.place) : ""}</p>
     ${e.about ? `<p class="muted small">${esc(e.about)}</p>` : ""}
     <div class="pills">${e.link ? `<a class="pill white" href="${e.link}" target="_blank" rel="noopener">Sign up ${I.out}</a>` : ""}${addCal(e)}</div></div>
   </div>`;
@@ -623,7 +627,7 @@ function vHome(){
     <a class="feature studyhero" href="#study-${st.id}" style="${bgi(st.photo)}">
       <span class="studychip">${I.book} Latest study</span>
       <p class="tag" style="color:var(--ink)">${esc(st.series)} · ${esc(st.passage.label)}</p>
-      <p class="big h2">${esc(st.title)}</p>
+      <p class="big h2"${fit(st.title)}>${esc(st.title)}</p>
       <p class="muted small" style="max-width:34ch">“${esc(st.keyVerse.text.split(/[.;]/)[0])}.”</p>
       <span class="pill white" style="margin-top:6px">Open the study ${I.out.replace('M7 17 17 7','M5 12h14').replace('M8 7h9v9','m13 6 6 6-6 6')}</span>
     </a>
@@ -634,12 +638,12 @@ function vHome(){
       <div class="rowhead"><p class="tag">Coming up</p><a href="#calendar">Calendar</a></div>
       ${sp.length === 1 && sp[0].art ? `<a class="ecard solo artcard" href="#calendar" aria-label="${esc(sp[0].title)}, ${esc(whenLabel(sp[0]))}"><div class="art">${ART[sp[0].art]()}</div></a>` : sp.length === 1 ? `<a class="ecard solo" href="#calendar" style="${bgi(evPhoto(sp[0]))}">
           <span class="datechip"><small>${DAYS[parseD(sp[0].date).getDay()].toUpperCase()}</small><b>${parseD(sp[0].date).getDate()}</b></span>
-          <div><p class="tag" style="color:var(--ink);margin-bottom:6px">${esc(daysAway(sp[0]))}</p><p class="big h2">${esc(sp[0].title)}</p><p class="tag" style="margin-top:8px">${esc(MONTHS[parseD(sp[0].date).getMonth()])} ${parseD(sp[0].date).getDate()} · ${fmtT(sp[0].start)} · ${esc(sp[0].place)}</p>
+          <div><p class="tag" style="color:var(--ink);margin-bottom:6px">${esc(daysAway(sp[0]))}</p><p class="big h2"${fit(sp[0].title)}>${esc(sp[0].title)}</p><p class="tag" style="margin-top:8px">${esc(MONTHS[parseD(sp[0].date).getMonth()])} ${parseD(sp[0].date).getDate()} · ${fmtT(sp[0].start)} · ${esc(sp[0].place)}</p>
           ${sp[0].link ? `<span class="pill white" style="margin-top:12px">Sign up ${I.out}</span>` : ""}</div>
         </a>` : `<div class="rail">${sp.map(e => e.art ? `<a class="ecard artcard" href="#calendar" aria-label="${esc(e.title)}"><div class="art">${ART[e.art]()}</div></a>` : `
         <a class="ecard" href="#calendar" style="${bgi(evPhoto(e))}">
           <span class="datechip"><small>${DAYS[parseD(e.date).getDay()].toUpperCase()}</small><b>${parseD(e.date).getDate()}</b></span>
-          <div><p class="h3">${esc(e.title)}</p><p class="tag" style="margin-top:6px">${esc(MONTHS[parseD(e.date).getMonth()])} ${parseD(e.date).getDate()} · ${fmtT(e.start)}</p></div>
+          <div><p class="h3"${fit(e.title, 75)}>${esc(e.title)}</p><p class="tag" style="margin-top:6px">${esc(MONTHS[parseD(e.date).getMonth()])} ${parseD(e.date).getDate()} · ${fmtT(e.start)}</p></div>
         </a>`).join("")}</div>`}
     </div>` : ""}
 
@@ -690,7 +694,7 @@ function vStudies(){
         <span class="num">${String(sNum(s)).padStart(2, "0")}</span>
         <span class="studychip">${I.book} Latest study</span>
         <p class="tag" style="color:var(--stage)">${esc(s.series)}</p>
-        <p class="big h2">${esc(s.title)}</p>
+        <p class="big h2"${fit(s.title)}>${esc(s.title)}</p>
         <p class="muted small">${esc(s.passage.label)}</p>
       </a>`).join("")}
     ${DATA.studies.length > 1 ? `<div class="stack" style="gap:10px">
@@ -708,7 +712,7 @@ function vStudy(id){
     <div class="pagehead" style="padding-top:22vh">
       <a class="back" href="#studies">${I.back} All studies</a>
       <p class="tag" style="color:var(--stage)">${esc(s.series)}</p>
-      <h1 class="big h1" style="font-size:clamp(56px,17vw,96px)">${esc(s.title)}</h1>
+      <h1 class="big h1" style="font-size:clamp(${fit(s.title) ? "30px," + Math.floor(150 / Math.max(...s.title.split(/\s+/).map(w => w.length))) + "vw" : "56px,17vw"},96px)">${esc(s.title)}</h1>
       <div class="pills" style="margin-top:6px"><a class="pill stage" href="${bibleUrl(s.passage.ref)}" target="_blank" rel="noopener">Read ${esc(s.passage.label)} ${I.out}</a></div>
     </div>
     <blockquote class="verse glass pad" style="${s.keyVerse.text.length > 90 ? "font-size:clamp(24px,7vw,32px)" : ""}">“${esc(s.keyVerse.text)}”<cite>${esc(s.keyVerse.cite)}</cite></blockquote>
@@ -818,6 +822,167 @@ window.addEventListener("scroll", onScroll, { passive:true });
 $("#installBtn").addEventListener("click", () => { $("#sheet").hidden = false; });
 $("#sheetClose").addEventListener("click", () => { $("#sheet").hidden = true; });
 $("#sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("#sheet").hidden = true; });
+/* ---------- content from the Google Sheet ----------
+   The youth pastors edit the "Abide Youth App – Content" sheet; the app reads it on every open,
+   so no publish is needed. Tabs: Studies, Events, Schedule changes, Links.
+   Studies: one row per study. Highest "Study #" shows first; the rest become the Catalog. */
+const CONTENT_SHEET = "1Bo40Qd3Jr4XtUjr9ROG1pK8ACODyeBNZImweBGOnaBI";
+const BOOKS = [
+  ["GEN","genesis gen ge gn"],["EXO","exodus exod exo ex"],["LEV","leviticus lev lv"],["NUM","numbers num nm nb"],["DEU","deuteronomy deut deu dt"],
+  ["JOS","joshua josh jos"],["JDG","judges judg jdg jg"],["RUT","ruth rut ru"],["1SA","1samuel 1sam 1sa 1sm"],["2SA","2samuel 2sam 2sa 2sm"],
+  ["1KI","1kings 1kgs 1ki 1kg"],["2KI","2kings 2kgs 2ki 2kg"],["1CH","1chronicles 1chron 1chr 1ch"],["2CH","2chronicles 2chron 2chr 2ch"],
+  ["EZR","ezra ezr"],["NEH","nehemiah neh ne"],["EST","esther esth est"],["JOB","job jb"],["PSA","psalms psalm psa ps pss"],["PRO","proverbs prov pro prv pr"],
+  ["ECC","ecclesiastes eccl ecc eccles"],["SNG","songofsongs songofsolomon song sos sng"],["ISA","isaiah isa is"],["JER","jeremiah jer"],["LAM","lamentations lam"],
+  ["EZK","ezekiel ezek ezk"],["DAN","daniel dan dn"],["HOS","hosea hos"],["JOL","joel jol jl"],["AMO","amos amo am"],["OBA","obadiah obad oba ob"],
+  ["JON","jonah jon"],["MIC","micah mic"],["NAM","nahum nah nam"],["HAB","habakkuk hab"],["ZEP","zephaniah zeph zep"],["HAG","haggai hag"],
+  ["ZEC","zechariah zech zec"],["MAL","malachi mal"],["MAT","matthew matt mat mt"],["MRK","mark mrk mk mar"],["LUK","luke luk lk"],["JHN","john jhn jn joh"],
+  ["ACT","acts act ac"],["ROM","romans rom ro rm"],["1CO","1corinthians 1cor 1co"],["2CO","2corinthians 2cor 2co"],["GAL","galatians gal"],
+  ["EPH","ephesians eph"],["PHP","philippians phil php"],["COL","colossians col"],["1TH","1thessalonians 1thess 1thes 1th"],["2TH","2thessalonians 2thess 2thes 2th"],
+  ["1TI","1timothy 1tim 1ti"],["2TI","2timothy 2tim 2ti"],["TIT","titus tit"],["PHM","philemon phlm phm"],["HEB","hebrews heb"],["JAS","james jas jm"],
+  ["1PE","1peter 1pet 1pe 1pt"],["2PE","2peter 2pet 2pe 2pt"],["1JN","1john 1jn 1jo"],["2JN","2john 2jn 2jo"],["3JN","3john 3jn 3jo"],["JUD","jude jud"],["REV","revelation revelations rev re"]
+];
+const BOOK = {}; BOOKS.forEach(([c, names]) => names.split(" ").forEach(n => BOOK[n] = c));
+/* "1 Samuel 15:7–26" -> "1SA.15.7-26", "Psalm 23" -> "PSA.23", "First John 4:8" -> "1JN.4.8" */
+function usfm(label){
+  const m = String(label).replace(/[–—]/g, "-").replace(/\./g, " ").trim()
+    .replace(/^(first|1st|i)\s+/i, "1 ").replace(/^(second|2nd|ii)\s+/i, "2 ").replace(/^(third|3rd|iii)\s+/i, "3 ")
+    .match(/^([1-3]?\s*[a-z ]+?)\s*(\d+)(?::(\d+)(?:\s*-\s*(\d+)(?::(\d+))?)?)?/i);
+  if (!m) return "";
+  const code = BOOK[m[1].toLowerCase().replace(/\s+/g, "")]; if (!code) return "";
+  let r = `${code}.${m[2]}`;
+  if (m[3]) r += `.${m[3]}` + (m[4] && !m[5] ? `-${m[4]}` : "");
+  return r;
+}
+function parseCSV(text){
+  const rows = []; let row = [], cell = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+    else cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+const STUDY_PHOTOS = [37, 40, 23, 29, 38, 30, 21, 12, 33, 6, 20, 42];   // used when a study's Photo cell is blank
+function photoFor(name, n, fallback){
+  const k = String(name || "").trim().toLowerCase().replace(/\.jpe?g$/, "");
+  const i = k ? PHOTOS.findIndex(p => p.src === `photos/${k}.jpg`) : -1;
+  return i >= 0 ? i : fallback ?? STUDY_PHOTOS[(Math.max(n, 1) - 1) % STUDY_PHOTOS.length];
+}
+function studiesFromSheet(text){
+  const rows = parseCSV(text); if (rows.length < 2) return null;
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  const col = (...keys) => head.findIndex(h => keys.some(k => h.startsWith(k)));
+  const C = { num: col("study"), title: col("title"), passage: col("passage"), verse: col("key verse"), cite: col("key verse ref"),
+    intro: col("intro"), more: col("go deeper"), photo: col("photo") };
+  const qs = head.map((h, i) => h.startsWith("question") ? i : -1).filter(i => i >= 0);
+  const get = (r, i) => (i >= 0 && r[i] != null ? String(r[i]).trim() : "");
+  const out = rows.slice(1).filter(r => get(r, C.title)).map((r, k) => {
+    const n = parseInt(get(r, C.num).replace(/\D/g, ""), 10) || 0, title = get(r, C.title), passage = get(r, C.passage);
+    const refs = s => s.split(/[;\n]+/).map(x => x.trim()).filter(Boolean).map(x => ({ label: x, ref: usfm(x) })).filter(x => x.ref);
+    return {
+      id: (title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "study") + (n ? "-" + n : ""),
+      n, row: k, photo: photoFor(get(r, C.photo), n), series: n ? `Study ${n}` : "Study", title,
+      passage: { label: passage, ref: usfm(passage) },
+      keyVerse: { text: get(r, C.verse).replace(/^[“"]|[”"]$/g, ""), cite: get(r, C.cite) || passage },
+      intro: get(r, C.intro).split(/\n+/).map(x => x.trim()).filter(Boolean),
+      questions: qs.map(i => get(r, i)).filter(Boolean),
+      more: refs(get(r, C.more))
+    };
+  });
+  out.sort((a, b) => (b.n - a.n) || (a.row - b.row));
+  return out.length ? out : null;
+}
+/* "10/28/2026", "2026-10-28", "Oct 28, 2026", "October 28" -> "2026-10-28" */
+function sheetDate(s){
+  s = String(s || "").trim(); if (!s) return "";
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  m = s.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/);
+  if (m) { let y = m[3] ? +m[3] : today().getFullYear(); if (y < 100) y += 2000; return `${y}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`; }
+  const d = new Date(/\d{4}/.test(s) ? s : `${s} ${today().getFullYear()}`);
+  return isNaN(d) ? "" : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+/* "6:30 PM", "6:30pm", "6pm", "18:30", "6:30:00 PM" -> "18:30" */
+function sheetTime(s){
+  const m = String(s || "").trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(a|p)?/); if (!m) return "";
+  let h = +m[1]; if (m[3] === "p" && h < 12) h += 12; if (m[3] === "a" && h === 12) h = 0;
+  return `${String(h).padStart(2, "0")}:${m[2] || "00"}`;
+}
+const yes = s => /^(y|yes|true|x|✓)/i.test(String(s || "").trim());
+/* Turns a tab into a list of { header: value } rows, skipping blank rows. */
+function sheetRows(text){
+  const rows = parseCSV(text); if (rows.length < 1) return [];
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  return rows.slice(1).map(r => {
+    const o = {}; head.forEach((h, i) => o[h] = String(r[i] ?? "").trim());
+    o.$ = (...keys) => { const h = head.find(x => keys.some(k => x.startsWith(k))); return h ? o[h] : ""; };
+    return o;
+  }).filter(o => head.some(h => o[h]));
+}
+function eventsFromSheet(text){
+  return sheetRows(text).map((r, k) => {
+    const title = r.$("title", "event"), date = sheetDate(r.$("date", "start date")); if (!title || !date) return null;
+    const endDate = sheetDate(r.$("end date")), start = sheetTime(r.$("start time", "time")), end = sheetTime(r.$("end time"));
+    const e = { id: "sheet-" + k, title, date, start, place: r.$("place", "where"), about: r.$("description", "about", "details"),
+      photo: photoFor(r.$("photo"), 0, 38), replaces: yes(r.$("replaces")) };
+    if (end) e.end = end;
+    if (endDate && endDate !== date) e.endDate = endDate;
+    if (!start) e.allDay = true;
+    const link = r.$("sign", "link"); if (/^https?:\/\//i.test(link)) e.link = link;
+    return e;
+  }).filter(Boolean);
+}
+function changesFromSheet(text){
+  return sheetRows(text).map(r => {
+    const date = sheetDate(r.$("date")), title = r.$("what", "title"); if (!date || !title) return null;
+    return { date, title, note: r.$("note", "details"), noYouth: yes(r.$("no youth", "cancel")) };
+  }).filter(Boolean);
+}
+function linksFromSheet(text){
+  return sheetRows(text).map(r => {
+    let href = r.$("link", "url"); const label = r.$("label", "name", "button"); if (!href || !label) return null;
+    if (!/^(https?:|mailto:|tel:|sms:)/i.test(href)) href = "https://" + href;
+    return { label, href };
+  }).filter(Boolean);
+}
+/* What the code ships with, so a sheet that can't be reached never empties the app. */
+const BUILT_IN = { studies: DATA.studies, events: DATA.events, changes: DATA.changes, links: DATA.church.links };
+function applySheet(s){
+  if (s.studies && s.studies.length) DATA.studies = s.studies;
+  if (s.events) DATA.events = [...BUILT_IN.events, ...s.events.filter(e => !BUILT_IN.events.some(b => b.title.toLowerCase() === e.title.toLowerCase() && b.date === e.date))];
+  if (s.changes) DATA.changes = [...BUILT_IN.changes, ...s.changes];
+  if (s.links && s.links.length) DATA.church.links = s.links;
+}
+(function(){
+  const cached = store.get("sheet", null); if (cached) applySheet(cached);
+  const tab = name => fetch(`https://docs.google.com/spreadsheets/d/${CONTENT_SHEET}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(name)}&t=${Date.now()}`, { cache: "no-store" })
+    .then(r => r.ok ? r.text() : Promise.reject()).catch(() => null);
+  let busy = false;
+  async function load(){
+    if (busy || !navigator.onLine) return; busy = true;
+    try {
+      const [st, ev, ch, ln] = await Promise.all(["Studies", "Events", "Schedule changes", "Links"].map(tab));
+      // A tab that fails to load (or comes back as a sign-in page) keeps what we had before.
+      const ok = t => t && !/^\s*</.test(t);
+      const prev = store.get("sheet", {}) || {};
+      const s = {
+        studies: ok(st) ? studiesFromSheet(st) || prev.studies : prev.studies,
+        events: ok(ev) ? eventsFromSheet(ev) : prev.events,
+        changes: ok(ch) ? changesFromSheet(ch) : prev.changes,
+        links: ok(ln) ? linksFromSheet(ln) : prev.links
+      };
+      if (JSON.stringify(s) === JSON.stringify(prev)) return;
+      store.set("sheet", s); applySheet(s);
+      const h = (location.hash || "#home").slice(1);
+      if (!h.startsWith("study-") || DATA.studies.some(x => x.id === h.slice(6))) route();
+    } finally { busy = false; }
+  }
+  load();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") load(); });
+})();
 route();
 </script>
 
