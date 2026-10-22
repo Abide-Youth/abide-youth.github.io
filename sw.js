@@ -1,5 +1,5 @@
 /* Abide Youth offline cache. Bump VERSION whenever you publish changes. */
-const VERSION = "abide-v14";
+const VERSION = "abide-v15";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
   // first background on each page; every other photo is cached the first time it loads
   "photos/senior-night-26-3.jpg", "photos/back-to-school-bash.jpg", "photos/sep-25-night-4.jpg", "photos/sep-26-night-1.jpg", "photos/ywam-launch-4.jpg"];

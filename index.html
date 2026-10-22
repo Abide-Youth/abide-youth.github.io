@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="14";</script>
+<script>window.BUILD="15";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -169,6 +169,11 @@ details[open] .chev{transform:rotate(90deg)}
 .scard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;aspect-ratio:5/4;max-width:100%;border-radius:26px;overflow:hidden;padding:18px;background:#111 center/cover}
 .scard::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,13,0) 25%,rgba(7,8,13,.9))}
 .scard > *{position:relative}
+.crow{display:flex;align-items:center;gap:14px;padding:10px 14px 10px 10px;border-radius:20px}
+.crow .t{margin:0;font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase;line-height:1}
+.crow .m{margin:3px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.crow .chev{width:18px;height:18px;margin-left:auto;flex:none;color:var(--ink-3)}
+.scard .studychip{align-self:flex-start}
 .scard .num{position:absolute;top:10px;right:16px;font-family:var(--display);font-weight:900;font-size:80px;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.6)}
 .reader{font-family:var(--read);font-size:18px;line-height:1.7}
 .reader p{margin:0 0 14px}
@@ -356,10 +361,11 @@ const DATA = {
       prices: [ { amount: 260, until: "2026-10-16" }, { amount: 275 } ],
       about: "Kick off the new year with four days away together. Grab your spot now." }
   ],
+  // Newest study goes FIRST. Older ones stay below it and become the Studies catalog. No dates.
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
   studies: [
     {
-      id: "after-his-heart", photo: 37, series: "Study 2 · 10.14.26", title: "After His Heart",
+      id: "after-his-heart", photo: 37, series: "Study 2", title: "After His Heart",
       passage: { label: "1 Samuel 13:14", ref: "1SA.13.14" },
       keyVerse: { text: "But now your kingdom shall not continue. The LORD has sought out a man after his own heart, and the LORD has commanded him to be prince over his people, because you have not kept what the LORD commanded you.", cite: "1 Samuel 13:14" },
       intro: [
@@ -371,6 +377,20 @@ const DATA = {
         "What areas of your life are you like David (trusting God, after His heart, etc.)?"
       ],
       more: []
+    },
+    {
+      id: "obedience", photo: 40, series: "Study 1", title: "Wholehearted Obedience",
+      passage: { label: "1 Samuel 15:7–26", ref: "1SA.15.7-26" },
+      keyVerse: { text: "Has the LORD as great delight in burnt offerings and sacrifices, as in obeying the voice of the LORD?", cite: "1 Samuel 15:22a" },
+      intro: [
+        "In 1 Samuel 15, Saul disobeys the Lord\u2019s command, delivered through Samuel, by failing to completely destroy the Amalekites. He then lies to Samuel, claiming that he has obeyed the Lord, and attempts to justify his actions. When confronted, however, Saul admits that he acted out of fear, confessing that he was \u201cafraid of the people.\u201d"
+      ],
+      questions: [
+        "1 Sam 15:22 and Psalm 51:16 show us that God cares more about our hearts than our actions. Why do you think God cares more about our inward obedience than our outward actions?",
+        "In 1 Sam 15:24, Saul tells Samuel he sinned because he was afraid of the people and obeyed them. Have you ever let peer pressure influence the way you responded to God? Why or why not?",
+        "Have you ever had a moment in your faith where you felt you were obedient, but not all the way? What was that like? Did you have an opportunity to be fully obedient later on?"
+      ],
+      more: [ { label: "Psalm 51:16–17", ref: "PSA.51.16-17" }, { label: "Psalm 119:10", ref: "PSA.119.10" }, { label: "Revelation 2:1–7", ref: "REV.2.1-7" } ]
     }
   ],
   // Add photo: "data:image/jpeg;base64,..." or a file path once photos are ready.
@@ -601,7 +621,7 @@ function vHome(){
     ${feat.map(retreatCard).join("")}
 
     <a class="feature studyhero" href="#study-${st.id}" style="${bgi(st.photo)}">
-      <span class="studychip">${I.book} This week's study</span>
+      <span class="studychip">${I.book} Latest study</span>
       <p class="tag" style="color:var(--ink)">${esc(st.series)} · ${esc(st.passage.label)}</p>
       <p class="big h2">${esc(st.title)}</p>
       <p class="muted small" style="max-width:34ch">“${esc(st.keyVerse.text.split(/[.;]/)[0])}.”</p>
@@ -661,16 +681,24 @@ function vCalendar(){
   </section>`;
 }
 
+const sNum = s => ((s.series || "").match(/\d+/) || [""])[0];
 function vStudies(){
   return `<section class="view">
     <div class="pagehead"><p class="tag">Open your Bible</p><h1 class="big h1">The<br><span class="outline">Word</span></h1></div>
-    ${DATA.studies.map((s, i) => `
+    ${DATA.studies.slice(0, 1).map(s => `
       <a class="scard" href="#study-${s.id}" style="${bgi(s.photo)}">
-        <span class="num">${String(i + 1).padStart(2, "0")}</span>
+        <span class="num">${String(sNum(s)).padStart(2, "0")}</span>
+        <span class="studychip">${I.book} Latest study</span>
         <p class="tag" style="color:var(--stage)">${esc(s.series)}</p>
         <p class="big h2">${esc(s.title)}</p>
         <p class="muted small">${esc(s.passage.label)}</p>
       </a>`).join("")}
+    ${DATA.studies.length > 1 ? `<div class="stack" style="gap:10px">
+      <div class="rowhead"><p class="tag">Catalog</p><span class="tag">${DATA.studies.length - 1} past ${DATA.studies.length === 2 ? "study" : "studies"}</span></div>
+      ${DATA.studies.slice(1).map(s => `<a class="crow glass" href="#study-${s.id}">
+        <span class="thumb" style="${bgi(s.photo)}"><span>${String(sNum(s)).padStart(2, "0")}</span></span>
+        <div style="min-width:0"><p class="t">${esc(s.title)}</p><p class="m">${esc(s.series)} · ${esc(s.passage.label)}</p></div>${I.chev}</a>`).join("")}
+    </div>` : ""}
     <p class="hint">Scripture links open the Bible app (YouVersion) or bible.com</p>
   </section>`;
 }
