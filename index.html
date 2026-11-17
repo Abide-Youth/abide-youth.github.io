@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="19";</script>
+<script>window.BUILD="20";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -610,7 +610,7 @@ function countHTML(){
   const p = x => String(x).padStart(2, "0");
   return `<div class="count"><div><b>${d}</b><span>${d === 1 ? "DAY" : "DAYS"}</span></div><div><b>${p(h)}</b><span>HRS</span></div><div><b>${p(m)}</b><span>MIN</span></div><p class="until">until<br>youth</p></div>`;
 }
-const whenLabel = e => { const d = parseD(e.date); if (e.allDay && e.endDate) return `${DAYS[d.getDay()]}–${DAYS[parseD(e.endDate).getDay()]} · ${rangeLabel(e)}`; return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()} · ${fmtT(e.start)}`; };
+const whenLabel = e => { const d = parseD(e.date); if (e.allDay && e.endDate) return evWhen(e); return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()} · ${fmtT(e.start)}`; };
 const evPhoto = e => e.photo ?? 38;
 /* Shrinks a big headline when one word is too long to fit the card (titles typed into the sheet can be anything). */
 const fit = (s, vw = 130) => { const n = Math.max(...String(s).split(/\s+/).map(w => w.length)); return n > 9 ? ` style="font-size:clamp(26px,${Math.floor(vw / n)}vw,64px)"` : ""; };
@@ -667,7 +667,8 @@ const ART = {
 };
 /* ---------- special event extras ---------- */
 const rangeLabel = e => { const a = parseD(e.date), b = parseD(e.endDate || e.date); return a.getMonth() === b.getMonth() ? `${MONTHS[a.getMonth()]} ${a.getDate()}–${b.getDate()}` : `${MONTHS[a.getMonth()]} ${a.getDate()} – ${MONTHS[b.getMonth()]} ${b.getDate()}`; };
-const evWhen = e => e.allDay ? `${DAYS[parseD(e.date).getDay()]}–${DAYS[parseD(e.endDate || e.date).getDay()]} · ${rangeLabel(e)}` : whenLabel(e);
+/* Weekdays only help for short trips; a month-long plan just shows its dates. */
+const evWhen = e => !e.allDay ? whenLabel(e) : (parseD(e.endDate || e.date) - parseD(e.date)) / 864e5 > 6 ? rangeLabel(e) : `${DAYS[parseD(e.date).getDay()]}–${DAYS[parseD(e.endDate || e.date).getDay()]} · ${rangeLabel(e)}`;
 /* Current price, plus the next jump if one is coming. */
 function priceInfo(e){
   if (!e.prices) return null;
@@ -700,7 +701,7 @@ const specials = () => DATA.events.filter(e => parseD(e.endDate || e.date) >= to
 const changesSoon = (days = 21) => (DATA.changes || []).filter(c => { const d = (parseD(c.date) - today()) / 864e5; return d >= 0 && d <= days; }).sort((a,b) => a.date.localeCompare(b.date));
 const nextOf = r => { const d = today(); d.setDate(d.getDate() + ((r.day - d.getDay() + 7) % 7)); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 const DAYFULL = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
-const daysAway = e => { const n = Math.round((parseD(e.date) - today()) / 864e5); return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n < 7 ? "This " + DAYS[parseD(e.date).getDay()] : `In ${n} days`; };
+const daysAway = e => { const n = Math.round((parseD(e.date) - today()) / 864e5); if (n < 0) return "Happening now"; return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n < 7 ? "This " + DAYS[parseD(e.date).getDay()] : `In ${n} days`; };
 const headsUp = list => list.length ? `<div class="glass pad stack headsup" style="gap:10px"><p class="tag" style="color:var(--live)">Heads up</p>${list.map(c => `<div><b>${esc(c.title)}</b> <span class="tag" style="display:inline">${esc(whenLabel({ date: c.date, start: c.start || "18:30" }).split(" · ")[0])}</span>${c.note ? `<p class="muted small" style="margin-top:2px">${esc(c.note)}</p>` : ""}</div>`).join("")}</div>` : "";
 function specialCard(e){
   if (e.featured) return retreatCard(e);
