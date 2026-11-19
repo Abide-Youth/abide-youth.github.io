@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="20";</script>
+<script>window.BUILD="21";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -458,7 +458,7 @@ const DATA = {
       prices: [ { amount: 260, until: "2026-10-16" }, { amount: 275 } ],
       about: "Kick off the new year with four days away together. Grab your spot now." }
   ],
-  // Studies now come from the "Abide Youth App – Content" Google Sheet (see CONTENT_SHEET below);
+  // Studies now come from the "Abide Youth App – Content (v2)" Google Sheet (see CONTENT_SHEET below);
   // the pastors edit it and the app picks it up on its own. These are only the offline fallback.
   // Newest study goes FIRST. Older ones stay below it and become the Studies catalog. No dates.
   // Bible references use USFM book codes: JHN, PSA, MAT, ROM, 1JN, GAL, COL...
@@ -722,17 +722,25 @@ function vHome(){
   const n = nextYouth(); const st = DATA.studies[0]; const c = DATA.church;
   const feat = specials().filter(e => e.featured);
   const sp = specials().filter(e => !e.featured);
-  const words = ["Know Him", "Known by Him", "Make Him Known"];
+  const H = DATA.home || {};
+  const words = H.tagline ? H.tagline.split(/[;•|]+/).map(w => w.trim()).filter(Boolean) : ["Know Him", "Known by Him", "Make Him Known"];
+  const ig = c.contact.find(x => /instagram/i.test(x.href)), txt = c.contact.find(x => x.href.startsWith("sms:"));
   const band = Array(4).fill(words.map(w => `<span>${w} ✦</span>`).join("")).join("");
   return `<section class="view home">
     <div class="hero">
       <span class="live ${n.live ? "now" : ""}"><i></i><span class="tag" style="color:var(--ink)">${n.live ? "Live now" : "Wed " + MONTHS[n.at.getMonth()] + " " + n.at.getDate() + " · 6:30 PM · The Gym"}</span></span>
       <h1 class="big h1">Abide<br><span class="outline">Youth</span></h1>
       <div id="count">${countHTML()}</div>
-      <p class="muted" style="max-width:32ch">Wednesdays at 6:30 in the Gym. 6th–12th grade. Bring a friend.</p>
+      <p class="muted" style="max-width:32ch">${esc(H["home intro"] || "Wednesdays at 6:30 in the Gym. 6th–12th grade. Bring a friend.")}</p>
     </div>
 
-    <div class="band" aria-label="Know Him, Known by Him, Make Him Known"><div class="track">${band}</div></div>
+    <div class="band" aria-label="${esc(words.join(", "))}"><div class="track">${band}</div></div>
+
+    ${(DATA.announcements || []).map(a => `<div class="next announce" style="${bgi(a.photo)}">
+      <span class="live"><i></i><span class="tag" style="color:var(--ink)">Announcement</span></span>
+      <div class="stack" style="gap:10px"><p class="big h2"${fit(a.title)}>${esc(a.title)}</p>${a.text ? `<p class="muted small">${esc(a.text)}</p>` : ""}
+      ${a.link ? `<div class="pills"><a class="pill white" href="${esc(a.link)}" ${a.link.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(a.button)} ${I.out}</a></div>` : ""}</div>
+    </div>`).join("")}
 
     ${feat.map(retreatCard).join("")}
 
@@ -772,8 +780,8 @@ function vHome(){
     </div>
 
     <div class="quick">
-      <a class="glass" href="${c.contact[3].href}" target="_blank" rel="noopener">${I.ig}<b>@abide.yth</b></a>
-      <a class="glass" href="${c.contact[1].href}">${I.msg}<b>Text “abide” to 877-804-2898 to receive text updates</b></a>
+      ${ig ? `<a class="glass" href="${esc(ig.href)}" target="_blank" rel="noopener">${I.ig}<b>${esc(ig.value)}</b></a>` : ""}
+      ${txt ? `<a class="glass" href="${esc(txt.href)}">${I.msg}<b>${esc(txt.value)} to receive text updates</b></a>` : ""}
     </div>
     ${window.BUILD ? `<p class="hint">App version ${window.BUILD}</p>` : ""}
   </section>`;
@@ -873,7 +881,7 @@ function vLeaders(){
         <span class="mark mono"></span>
         <b>${esc(l.name)}</b><span class="r">${esc(l.role)}</span>
       </article>`; }).join("")}</div>
-    <p class="hint">Headshots coming soon</p>
+    ${DATA.leaders.some(l => !l.photo) ? `<p class="hint">${esc((DATA.home || {})["leaders note"] || "Headshots coming soon")}</p>` : ""}
   </section>`;
 }
 
@@ -935,10 +943,11 @@ $("#installBtn").addEventListener("click", () => { $("#sheet").hidden = false; }
 $("#sheetClose").addEventListener("click", () => { $("#sheet").hidden = true; });
 $("#sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("#sheet").hidden = true; });
 /* ---------- content from the Google Sheet ----------
-   The youth pastors edit the "Abide Youth App – Content" sheet; the app reads it on every open,
-   so no publish is needed. Tabs: Studies, Events, Schedule changes, Links.
+   The youth pastors edit the "Abide Youth App – Content (v2)" sheet; the app reads it on every open,
+   so no publish is needed. Tabs: Studies, Events, Schedule changes, Links, Announcements,
+   Weekly schedule, Contacts, Leaders, App text.
    Studies: one row per study. Highest "Study #" shows first; the rest become the Catalog. */
-const CONTENT_SHEET = "1Bo40Qd3Jr4XtUjr9ROG1pK8ACODyeBNZImweBGOnaBI";
+const CONTENT_SHEET = "1O3lMqWMnVhwt_ucQeGz8IGL8itMhabc8EKvC-0hyIlU";
 const BOOKS = [
   ["GEN","genesis gen ge gn"],["EXO","exodus exod exo ex"],["LEV","leviticus lev lv"],["NUM","numbers num nm nb"],["DEU","deuteronomy deut deu dt"],
   ["JOS","joshua josh jos"],["JDG","judges judg jdg jg"],["RUT","ruth rut ru"],["1SA","1samuel 1sam 1sa 1sm"],["2SA","2samuel 2sam 2sa 2sm"],
@@ -1060,9 +1069,62 @@ function linksFromSheet(text){
     return { label, href };
   }).filter(Boolean);
 }
+const DAYIDX = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+const fmtRange = (a, b) => { if (!b) return fmtT(a); const x = fmtT(a), y = fmtT(b); return x.slice(-2) === y.slice(-2) ? `${x.slice(0, -3)}–${y}` : `${x}–${y}`; };
+/* Each tab below needs its own header names; if a tab is missing (Google then hands back the first tab), nothing matches and the app keeps what it has. */
+function announcementsFromSheet(text){
+  return sheetRows(text).map(r => {
+    const title = r.$("title", "headline"); if (!title) return null;
+    let link = r.$("button link", "link"); if (link && !/^(https?:|mailto:|tel:|sms:|#)/i.test(link)) link = "https://" + link;
+    return { title, text: r.$("message", "text", "details"), button: r.$("button text") || (link ? "Learn more" : ""), link,
+      until: sheetDate(r.$("show until", "until")), photo: photoFor(r.$("photo"), 0, 14) };
+  }).filter(Boolean);
+}
+function weeklyFromSheet(text){
+  return sheetRows(text).map(r => {
+    const day = DAYIDX[r.$("day").toLowerCase().slice(0, 3)], title = r.$("what", "title"), start = sheetTime(r.$("start time", "time"));
+    if (day == null || !title || !start) return null;
+    const end = sheetTime(r.$("end time")), who = r.$("who", "grades"), place = r.$("where", "place"), about = r.$("description", "about"), note = r.$("short note", "note");
+    const old = BUILT_IN.recurring.find(x => x.title.toLowerCase() === title.toLowerCase());
+    return { title, day, start, end, who, place, about, note, photo: old ? old.photo : photoFor(r.$("photo"), 0, 38), cal: !/^n/i.test(r.$("show on calendar", "calendar") || "yes") };
+  }).filter(Boolean);
+}
+function contactsFromSheet(text){
+  return sheetRows(text).map(r => {
+    const label = r.$("label"), value = r.$("shows as", "value", "text"); let href = r.$("link");
+    if (!label || !value) return null;
+    if (!href) href = /@[^\s]*\./.test(value) && !value.startsWith("@") ? "mailto:" + value.trim() : /^[\d\s().+-]{7,}$/.test(value) ? "tel:" + value.replace(/\D/g, "") : "";
+    else if (!/^(https?:|mailto:|tel:|sms:)/i.test(href)) href = href.includes("@") ? "mailto:" + href : "https://" + href;
+    return href ? { label, value, href } : null;
+  }).filter(Boolean);
+}
+function leadersFromSheet(text){
+  return sheetRows(text).map(r => {
+    const name = r.$("name"); if (!name) return null;
+    const ph = r.$("photo"), i = ph && !/^https?:/i.test(ph) ? photoFor(ph, 0, -1) : -1;
+    return { name, role: r.$("role"), photo: /^https?:\/\//i.test(ph) ? ph : i >= 0 ? img(i) : "" };
+  }).filter(Boolean);
+}
+function homeTextFromSheet(text){
+  const o = {}; sheetRows(text).forEach(r => { const k = r.$("setting", "what"), v = r.$("text", "value"); if (k && v) o[k.toLowerCase()] = v; });
+  return Object.keys(o).length ? o : null;
+}
 /* What the code ships with, so a sheet that can't be reached never empties the app. */
-const BUILT_IN = { studies: DATA.studies, events: DATA.events, changes: DATA.changes, links: DATA.church.links };
+const BUILT_IN = { studies: DATA.studies, events: DATA.events, changes: DATA.changes, links: DATA.church.links,
+  recurring: DATA.recurring, times: DATA.church.times, contact: DATA.church.contact, leaders: DATA.leaders,
+  address: DATA.church.address, mapsQuery: DATA.church.mapsQuery };
 function applySheet(s){
+  DATA.announcements = (s.announcements || []).filter(a => !a.until || parseD(a.until) >= today());
+  if (s.weekly && s.weekly.length) {
+    DATA.church.times = s.weekly.map(w => ({ label: w.title, day: DAYFULL[w.day], time: fmtRange(w.start, w.end), sub: w.note || [w.who, w.place].filter(Boolean).join(" · ") }));
+    DATA.recurring = s.weekly.filter(w => w.cal).map(({ cal, note, ...w }) => w);
+  }
+  if (s.contacts && s.contacts.length) DATA.church.contact = s.contacts;
+  if (s.leaders && s.leaders.length) DATA.leaders = s.leaders;
+  DATA.home = s.home || {};
+  const addr = DATA.home.address && DATA.home.address.split(",").map(x => x.trim()).filter(Boolean);
+  if (addr && addr.length >= 2) { DATA.church.address = [DATA.church.name, addr[0], addr.slice(1).join(", ")]; DATA.church.mapsQuery = `${DATA.church.name}, ${addr.join(", ")}`; }
+  else { DATA.church.address = BUILT_IN.address; DATA.church.mapsQuery = BUILT_IN.mapsQuery; }
   if (s.studies && s.studies.length) DATA.studies = s.studies;
   if (s.events) DATA.events = [...BUILT_IN.events, ...s.events.filter(e => !BUILT_IN.events.some(b => b.title.toLowerCase() === e.title.toLowerCase() && b.date === e.date))];
   if (s.changes) DATA.changes = [...BUILT_IN.changes, ...s.changes];
@@ -1076,7 +1138,7 @@ function applySheet(s){
   async function load(){
     if (busy || !navigator.onLine) return; busy = true;
     try {
-      const [st, ev, ch, ln] = await Promise.all(["Studies", "Events", "Schedule changes", "Links"].map(tab));
+      const [st, ev, ch, ln, an, wk, ct, ld, hm] = await Promise.all(["Studies", "Events", "Schedule changes", "Links", "Announcements", "Weekly schedule", "Contacts", "Leaders", "App text"].map(tab));
       // A tab that fails to load (or comes back as a sign-in page) keeps what we had before.
       const ok = t => t && !/^\s*</.test(t);
       const prev = store.get("sheet", {}) || {};
@@ -1084,7 +1146,12 @@ function applySheet(s){
         studies: ok(st) ? studiesFromSheet(st) || prev.studies : prev.studies,
         events: ok(ev) ? eventsFromSheet(ev) : prev.events,
         changes: ok(ch) ? changesFromSheet(ch) : prev.changes,
-        links: ok(ln) ? linksFromSheet(ln) : prev.links
+        links: ok(ln) ? linksFromSheet(ln) : prev.links,
+        announcements: ok(an) ? announcementsFromSheet(an) : prev.announcements,
+        weekly: ok(wk) ? weeklyFromSheet(wk) : prev.weekly,
+        contacts: ok(ct) ? contactsFromSheet(ct) : prev.contacts,
+        leaders: ok(ld) ? leadersFromSheet(ld) : prev.leaders,
+        home: ok(hm) ? homeTextFromSheet(hm) : prev.home
       };
       if (JSON.stringify(s) === JSON.stringify(prev)) return;
       store.set("sheet", s); applySheet(s);
