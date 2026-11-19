@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>window.BUILD="21";</script>
+<script>window.BUILD="22";</script>
 <title>Abide Youth</title>
 <meta name="theme-color" content="#07080d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -252,7 +252,8 @@ select option{background:#15171f}
 .lcard.wide{grid-column:span 2;aspect-ratio:16/9}
 .lcard .ini{position:absolute;top:6px;left:12px;font-family:var(--display);font-weight:900;font-size:78px;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.35)}
 .lcard.wide .ini{font-size:96px}
-.lcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.lcard .shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.78))}
 .lcard .mark.mono{position:absolute;top:14px;right:14px;width:16px;height:20px;opacity:.5}
 .lcard b{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:.95;position:relative}
 .lcard span.r{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--stage);position:relative}
@@ -509,16 +510,16 @@ const DATA = {
   // Add photo: "data:image/jpeg;base64,..." or a file path once photos are ready.
   leaders: [
     { name: "Jaden & Olivia Henry", role: "Youth Pastors", photo: "" },
-    { name: "Colten May", role: "Worship & Lower High Boys Leader", photo: "" },
-    { name: "Jason Bowen", role: "Upper High Boys Leader", photo: "" },
+    { name: "Colten May", role: "Worship & Lower High Boys Leader", photo: "photos/leaders/colten-may.jpg" },
+    { name: "Jason Bowen", role: "Upper High Boys Leader", photo: "photos/leaders/jason-bowen.jpg" },
     { name: "Olivia Ulrich", role: "Upper High Girls Leader", photo: "" },
     { name: "Nate Constant", role: "Lower High Boys Leader", photo: "" },
     { name: "Brooklyn Bowen", role: "Lower High Girls Leader", photo: "" },
-    { name: "Brennan Cowing", role: "Middle School Boys Leader", photo: "" },
-    { name: "Eden Benson", role: "Middle School Girls Leader", photo: "" },
-    { name: "Adam Pacheco", role: "Leader", photo: "" },
+    { name: "Brennan Cowing", role: "Middle School Boys Leader", photo: "photos/leaders/brennan-cowing.jpg" },
+    { name: "Eden Benson", role: "Middle School Girls Leader", photo: "photos/leaders/eden-benson.jpg" },
+    { name: "Adam Pacheco", role: "Leader", photo: "photos/leaders/adam-pacheco.jpg" },
     { name: "Nikki Fox", role: "Leader", photo: "" },
-    { name: "Kristi Polhemus", role: "Leader", photo: "" }
+    { name: "Kristi Polhemus", role: "Leader", photo: "photos/leaders/kristi-polhemus.jpg" }
   ]};
 
 /* Photos, newest album first. Files live in the photos/ folder. */
@@ -877,7 +878,7 @@ function vLeaders(){
       const ws = l.name.split(/\s+/).filter(w => /^[A-Za-z]/.test(w));
       const ini = (l.name.includes("&") ? ws[0][0] + "&" + ws[1][0] : ws[0][0] + ws[ws.length - 1][0]).toUpperCase();
       return `<article class="lcard glass ${k === 0 ? "wide" : ""}">
-        ${l.photo ? `<img src="${l.photo}" alt="${esc(l.name)}">` : `<span class="ini">${ini}</span>`}
+        ${l.photo ? `<img src="${l.photo}" alt="${esc(l.name)}" loading="lazy"><i class="shade"></i>` : `<span class="ini">${ini}</span>`}
         <span class="mark mono"></span>
         <b>${esc(l.name)}</b><span class="r">${esc(l.role)}</span>
       </article>`; }).join("")}</div>
@@ -1102,7 +1103,8 @@ function leadersFromSheet(text){
   return sheetRows(text).map(r => {
     const name = r.$("name"); if (!name) return null;
     const ph = r.$("photo"), i = ph && !/^https?:/i.test(ph) ? photoFor(ph, 0, -1) : -1;
-    return { name, role: r.$("role"), photo: /^https?:\/\//i.test(ph) ? ph : i >= 0 ? img(i) : "" };
+    const was = (BUILT_IN.leaders || []).find(l => l.name.toLowerCase() === name.toLowerCase());
+    return { name, role: r.$("role"), photo: /^https?:\/\//i.test(ph) ? ph : i >= 0 ? img(i) : was ? was.photo : "" };
   }).filter(Boolean);
 }
 function homeTextFromSheet(text){
